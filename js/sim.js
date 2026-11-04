@@ -3,6 +3,7 @@
   const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const SPINNER = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏";
   const TICK = 40;
+  const VIEWS = ["files", "changes", "graph", "branches"];
   const CLIS = {
     claude: { title: "Claude Code", mode: "auto-accept edits on" },
     codex: { title: "Codex", mode: "workspace write" },
@@ -82,6 +83,8 @@
         if (text) this.submit(text);
       });
       this.pane.append(head, this.log);
+      this.pane.addEventListener("pointerdown", () => sim.focus(ws, this));
+      this.input.addEventListener("focus", () => sim.focus(ws, this));
     }
     add(node) {
       this.log.append(node);
@@ -177,6 +180,7 @@
       super(sim, ws, spec.cli, spec.task);
       this.spec = spec;
       this.branch = `${ws.spec.name}/${spec.cli}`;
+      this.changes = new Map();
       this.state = "working";
       this.run = 0;
       this.secs = 0;
@@ -201,6 +205,7 @@
       this.glyph.textContent = state === "done" ? "✓" : state === "asking" ? "■" : SPINNER[0];
       this.renderStatus();
       this.sim.refresh();
+      this.sim.renderPanel(this.ws);
     }
     setVerb(verb) {
       this.verb = verb;
@@ -327,7 +332,7 @@
       for (const text of step.lines) diff.append(el("span", text[0] === "+" ? "is-add" : "is-del", text));
       tool.box.append(diff);
       this.follow();
-      this.ws.changes.set(step.file, { status: step.status, add: step.add, del: step.del });
+      this.changes.set(step.file, { path: step.file, status: step.status, add: step.add, del: step.del, lines: step.lines });
       this.ws.fresh = step.file;
       this.sim.renderPanel(this.ws);
       await this.sim.clock.sleep(650);
@@ -358,8 +363,7 @@
       const tool = this.call("Bash", `git commit -m "${step.msg}"`);
       await this.sim.clock.sleep(500);
       this.finish(tool, step.hash);
-      this.ws.commits.unshift({ hash: step.hash, msg: step.msg });
-      this.sim.renderPanel(this.ws);
+      this.sim.commit(this, step.hash, step.msg);
       await this.sim.clock.sleep(320);
     }
     async msg(step) {
@@ -428,7 +432,7 @@
       this.chrome = options.chrome !== false;
       this.driver = options.driver && !REDUCED;
       this.clock = new Clock(REDUCED);
-      this.view = "files";
+      this.view = options.view || "files";
       this.touched = false;
       this.queue = Promise.resolve();
       this.tabCount = workspaces.length;
@@ -460,14 +464,25 @@
     }
 
     makeWorkspace(spec) {
-      const ws = { spec, files: spec.files, base: spec.commits, changes: new Map(), commits: [...spec.commits], fresh: null };
+      const base = spec.commits.length ? spec.commits : [{ hash: "f0c1e2a", msg: "Release 2.3" }];
+      const ws = { spec, files: spec.files, base: base.map((c) => ({ ...c, branch: "main", files: [] })), commits: [], fresh: null, docs: [], surface: "terminals" };
+      ws.commits = [...ws.base];
+      ws.host = el("div", "center");
+      ws.host.hidden = true;
+      ws.strip = el("div", "center-tabs");
+      ws.docHost = el("div", "doc-host");
       ws.panes = el("div", "panes");
-      ws.panes.hidden = true;
+      if (this.chrome) ws.host.append(ws.strip);
+      ws.host.append(ws.panes, ws.docHost);
       ws.terms = spec.agents.map((term) => (term.shell ? new Shell(this, ws, term) : new Agent(this, ws, term)));
       ws.agents = ws.terms.filter((term) => term instanceof Agent);
       ws.terms.forEach((term) => ws.panes.append(term.pane));
       ws.panes.dataset.layout = spec.layout || ws.terms.length;
-      this.stage.append(ws.panes);
+      ws.focus = ws.agents[0] || ws.terms[0];
+      ws.branch = ws.agents[0]?.branch || "main";
+      ws.focus.pane.classList.add("is-focus");
+      this.stage.append(ws.host);
+      this.renderStrip(ws);
       return ws;
     }
 
@@ -483,9 +498,13 @@
       side.append(this.tabList, add);
 
       const panel = el("div", "panel");
+      this.branchButton = el("button", "panel-branch");
+      this.branchButton.type = "button";
+      this.branchButton.title = "Switch branch";
+      this.branchButton.addEventListener("click", () => this.setView("branches"));
       const toggle = el("div", "panel-toggle");
-      this.viewButtons = ["files", "git"].map((view) => {
-        const button = el("button", null, view === "files" ? "Files" : "Git");
+      this.viewButtons = VIEWS.map((view) => {
+        const button = el("button", null, view[0].toUpperCase() + view.slice(1));
         button.type = "button";
         button.dataset.view = view;
         button.addEventListener("click", () => this.setView(view));
@@ -493,7 +512,7 @@
         return button;
       });
       this.panelBody = el("div", "panel-body");
-      panel.append(toggle, this.panelBody);
+      panel.append(this.branchButton, toggle, this.panelBody);
 
       const body = el("div", "app-body");
       body.append(side, this.stage, panel);
@@ -526,6 +545,7 @@
       ws.terms.push(shell);
       ws.panes.append(shell.pane);
       ws.panes.dataset.layout = ws.terms.length;
+      this.renderStrip(ws);
       shell.input.focus({ preventScroll: true });
       ws.terms.forEach((term) => term.follow());
     }
@@ -534,6 +554,7 @@
       ws.terms.splice(ws.terms.indexOf(shell), 1);
       shell.pane.remove();
       ws.panes.dataset.layout = ws.terms.length;
+      this.renderStrip(ws);
       ws.terms.forEach((term) => term.follow());
     }
 
@@ -542,7 +563,7 @@
       ws.terms.filter((term) => term instanceof Shell).forEach((shell) => shell.start());
       if (!ws.agents.length) return;
       for (;;) {
-        ws.changes.clear();
+        ws.agents.forEach((agent) => agent.changes.clear());
         ws.commits = [...ws.base];
         ws.fresh = null;
         this.renderPanel(ws);
@@ -555,11 +576,11 @@
     switchTo(ws) {
       this.active = ws;
       for (const other of this.workspaces) {
-        other.panes.hidden = other !== ws;
+        other.host.hidden = other !== ws;
         other.row?.classList.toggle("is-active", other === ws);
         other.row?.setAttribute("aria-current", other === ws ? "true" : "false");
       }
-      ws.terms.forEach((term) => term.follow());
+      this.showSurface(ws, ws.surface);
       this.renderPanel(ws);
       this.refresh();
     }
@@ -607,15 +628,181 @@
       }
     }
 
+    /* ---------- Center: the terminals, plus any file, diff or commit you open ---------- */
+    renderStrip(ws) {
+      if (!this.chrome) return;
+      const tab = (label, id, closable) => {
+        const box = el("span", "center-tab" + (ws.surface === id ? " is-on" : ""));
+        const open = el("button", null, label);
+        open.type = "button";
+        open.addEventListener("click", () => this.showSurface(ws, id));
+        box.append(open);
+        if (closable) {
+          const close = el("button", "center-close", "×");
+          close.type = "button";
+          close.setAttribute("aria-label", `Close ${label}`);
+          close.addEventListener("click", () => this.closeDoc(ws, id));
+          box.append(close);
+        }
+        return box;
+      };
+      ws.strip.replaceChildren(tab(`Terminals ${ws.terms.length}`, "terminals"), ...ws.docs.map((doc) => tab(doc.dirty ? `● ${doc.title}` : doc.title, doc.id, true)));
+    }
+    showSurface(ws, id) {
+      ws.surface = id;
+      ws.panes.hidden = id !== "terminals";
+      ws.docHost.hidden = id === "terminals";
+      ws.docs.forEach((doc) => (doc.node.hidden = doc.id !== id));
+      this.renderStrip(ws);
+      if (id === "terminals") ws.terms.forEach((term) => term.follow());
+    }
+    openDoc(ws, id, title, build) {
+      let doc = ws.docs.find((d) => d.id === id);
+      if (!doc) {
+        doc = { id, title, node: build() };
+        ws.docs.push(doc);
+        ws.docHost.append(doc.node);
+      }
+      this.showSurface(ws, id);
+      return doc;
+    }
+    closeDoc(ws, id) {
+      const doc = ws.docs.find((d) => d.id === id);
+      doc.node.remove();
+      ws.docs.splice(ws.docs.indexOf(doc), 1);
+      this.showSurface(ws, ws.surface === id ? "terminals" : ws.surface);
+    }
+
+    /* A file is yours to edit. Ctrl S saves it onto the branch you're on, as a change. */
+    openFile(ws, path) {
+      const text = window.YIEN_DATA.contents?.[path] ?? this.stubFor(ws, path);
+      const doc = this.openDoc(ws, `file:${path}`, path.split("/").pop(), () => {
+        const box = el("div", "editor");
+        const gutter = el("pre", "editor-gutter");
+        const area = el("textarea", "editor-text");
+        area.value = text;
+        area.spellcheck = false;
+        area.wrap = "off";
+        area.setAttribute("aria-label", `Edit ${path}`);
+        const number = () => (gutter.textContent = area.value.split("\n").map((_, i) => i + 1).join("\n"));
+        number();
+        area.addEventListener("scroll", () => (gutter.scrollTop = area.scrollTop));
+        area.addEventListener("input", () => {
+          number();
+          const open = ws.docs.find((d) => d.id === `file:${path}`);
+          if (!open.dirty) {
+            open.dirty = true;
+            this.renderStrip(ws);
+          }
+        });
+        area.addEventListener("keydown", (event) => {
+          if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "s") return;
+          event.preventDefault();
+          this.saveFile(ws, path, text, area.value);
+        });
+        box.append(el("p", "doc-path", path), gutter, area);
+        return box;
+      });
+      doc.node.querySelector("textarea").focus({ preventScroll: true });
+    }
+    stubFor(ws, path) {
+      const change = ws.agents.map((agent) => agent.changes.get(path)).find(Boolean);
+      const body = change ? change.lines.filter((l) => l[0] === "+").map((l) => l.slice(1)) : [];
+      return [`// ${path}`, "", ...body, ""].join("\n");
+    }
+    saveFile(ws, path, before, after) {
+      const doc = ws.docs.find((d) => d.id === `file:${path}`);
+      doc.dirty = false;
+      this.renderStrip(ws);
+      const agent = ws.agents.find((a) => a.branch === ws.branch);
+      if (!agent || before === after) return;
+      const old = before.split("\n");
+      const now = after.split("\n");
+      const added = now.filter((l) => !old.includes(l));
+      const removed = old.filter((l) => !now.includes(l));
+      agent.changes.set(path, {
+        path,
+        status: "M",
+        add: added.length,
+        del: removed.length,
+        lines: [...removed.map((l) => `-${l}`), ...added.map((l) => `+${l}`)],
+      });
+      ws.fresh = path;
+      this.renderPanel(ws);
+    }
+    diffNode(file) {
+      const box = el("div", "doc-file");
+      box.append(el("p", "doc-path", `${file.path}  +${file.add} −${file.del}`));
+      const pre = el("pre", "diff");
+      for (const line of file.lines) pre.append(el("span", line[0] === "+" ? "is-add" : "is-del", line));
+      box.append(pre);
+      return box;
+    }
+    openDiff(ws, file) {
+      this.openDoc(ws, `diff:${file.path}`, `${file.path.split("/").pop()} diff`, () => {
+        const box = el("div", "doc");
+        box.append(this.diffNode(file));
+        return box;
+      });
+    }
+    openCommit(ws, commit) {
+      this.openDoc(ws, `commit:${commit.hash}`, commit.hash, () => {
+        const box = el("div", "doc");
+        const head = el("div", "doc-commit");
+        head.append(el("b", null, commit.msg), el("span", null, `${commit.hash} on ${commit.branch}`));
+        box.append(head);
+        commit.files.forEach((file) => box.append(this.diffNode(file)));
+        if (!commit.files.length) box.append(el("p", "panel-empty", "This commit came in with the branch."));
+        return box;
+      });
+    }
+
+    /* ---------- Git, for whichever terminal you're in ---------- */
+    focus(ws, term) {
+      if (ws.focus === term && (!term.branch || ws.branch === term.branch)) return;
+      ws.focus?.pane.classList.remove("is-focus");
+      ws.focus = term;
+      term.pane.classList.add("is-focus");
+      if (term.branch) this.setBranch(ws, term.branch);
+    }
+    setBranch(ws, branch) {
+      ws.branch = branch;
+      const agent = ws.agents.find((a) => a.branch === branch);
+      if (agent && ws.focus !== agent) this.focus(ws, agent);
+      this.renderPanel(ws);
+    }
+    commit(agent, hash, msg) {
+      const { ws } = agent;
+      ws.commits.unshift({ hash, msg, branch: agent.branch, files: [...agent.changes.values()] });
+      agent.changes.clear();
+      this.renderPanel(ws);
+    }
+
+    /* ---------- Right: Files, Changes, Graph, Branches ---------- */
     renderPanel(ws) {
       if (!this.chrome || ws !== this.active || !this.viewButtons) return;
-      this.viewButtons.forEach((b) => b.classList.toggle("is-on", b.dataset.view === this.view));
-      this.panelBody.replaceChildren(this.view === "files" ? this.fileTree(ws) : this.gitView(ws));
+      // never pull the commit box out from under someone typing in it
+      if (this.panelBody.contains(document.activeElement) && document.activeElement.tagName === "INPUT") return;
+      this.branchButton.replaceChildren(el("span", "branch-icon"), el("span", "branch-name", ws.branch), el("span", "branch-more", "▾"));
+      const pending = ws.agents.find((a) => a.branch === ws.branch)?.changes.size || 0;
+      for (const button of this.viewButtons) {
+        const view = button.dataset.view;
+        button.classList.toggle("is-on", view === this.view);
+        button.textContent = view[0].toUpperCase() + view.slice(1);
+        if (view === "changes" && pending) button.append(el("em", null, String(pending)));
+      }
+      const build = { files: this.fileTree, changes: this.changesView, graph: this.graphView, branches: this.branchesView }[this.view];
+      this.panelBody.replaceChildren(build.call(this, ws));
     }
 
     fileTree(ws) {
+      const changed = new Map();
+      for (const agent of ws.agents) {
+        for (const commit of ws.commits) if (commit.branch === agent.branch) commit.files.forEach((f) => changed.set(f.path, f.status));
+        for (const [path, file] of agent.changes) changed.set(path, file.status);
+      }
       const root = {};
-      for (const path of new Set([...ws.files, ...ws.changes.keys()])) {
+      for (const path of new Set([...ws.files, ...changed.keys()])) {
         let dir = root;
         path.split("/").forEach((part, i, parts) => {
           if (i === parts.length - 1) dir[part] = path;
@@ -630,12 +817,19 @@
         });
         for (const name of names) {
           const isDir = typeof dir[name] === "object";
-          const change = isDir ? null : ws.changes.get(dir[name]);
-          const row = el("li", isDir ? "is-dir" : change ? "is-changed" : null);
-          row.style.paddingLeft = `${depth * 12 + 12}px`;
-          row.append(el("span", null, isDir ? `${name}/` : name));
-          if (change) row.append(el("em", null, change.status));
-          if (!isDir && dir[name] === ws.fresh) row.classList.add("is-fresh");
+          const status = isDir ? null : changed.get(dir[name]);
+          const row = el("li");
+          const line = el(isDir ? "span" : "button", "tree-row" + (isDir ? " is-dir" : status ? " is-changed" : ""));
+          line.style.paddingLeft = `${depth * 12 + 14}px`;
+          line.append(el("span", "tree-name", isDir ? `${name}/` : name));
+          if (status) line.append(el("em", null, status));
+          if (!isDir) {
+            line.type = "button";
+            line.addEventListener("click", () => this.openFile(ws, dir[name]));
+            if (dir[name] === ws.fresh) line.classList.add("is-fresh");
+            if (ws.surface === `file:${dir[name]}`) line.classList.add("is-open");
+          }
+          row.append(line);
           list.append(row);
           if (isDir) walk(dir[name], depth + 1);
         }
@@ -644,32 +838,123 @@
       return list;
     }
 
-    gitView(ws) {
-      const box = el("div", "git");
-      box.append(el("p", "git-branch", `yien/${ws.spec.name}`));
-      let add = 0;
-      let del = 0;
-      const rows = el("ul", "git-files");
-      for (const [path, change] of ws.changes) {
-        add += change.add;
-        del += change.del;
+    changesView(ws) {
+      const agent = ws.agents.find((a) => a.branch === ws.branch);
+      const files = agent ? [...agent.changes.values()] : [];
+      const box = el("div", "changes");
+      if (!files.length) {
+        box.append(el("p", "panel-empty", agent ? "Nothing to commit on this branch." : "main is clean. Agents work on their own branches."));
+        return box;
+      }
+      const add = files.reduce((n, f) => n + f.add, 0);
+      const del = files.reduce((n, f) => n + f.del, 0);
+      box.append(el("p", "panel-sum", `${files.length} ${files.length === 1 ? "file" : "files"} changed, +${add} −${del}`));
+      const list = el("ul", "change-list");
+      for (const file of files) {
+        const button = el("button", "change-row");
+        button.type = "button";
+        const name = el("span", "change-name", file.path.split("/").pop());
+        name.title = file.path;
+        button.append(el("em", null, file.status), name, el("span", "change-num", `+${file.add} −${file.del}`));
+        button.addEventListener("click", () => this.openDiff(ws, file));
         const row = el("li");
-        row.append(el("span", null, path.split("/").pop()), el("em", null, `+${change.add} −${change.del}`));
-        rows.append(row);
+        row.append(button);
+        list.append(row);
       }
-      const files = ws.changes.size;
-      box.append(el("p", "git-sum", files ? `${files} ${files === 1 ? "file" : "files"} changed, +${add} −${del}` : "No changes yet"), rows);
-      if (ws.commits.length) {
-        box.append(el("p", "git-head", "Commits"));
-        const log = el("ul", "git-log");
-        for (const commit of ws.commits) {
-          const row = el("li");
-          row.append(el("code", null, commit.hash), el("span", null, commit.msg));
-          log.append(row);
-        }
-        box.append(log);
-      }
+      const form = el("form", "commit-box");
+      const message = el("input");
+      message.type = "text";
+      message.placeholder = "Commit message";
+      message.setAttribute("aria-label", "Commit message");
+      const submit = el("button", null, "Commit");
+      submit.type = "submit";
+      form.append(message, submit);
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const hash = Math.random().toString(16).slice(2, 9);
+        this.commit(agent, hash, message.value.trim() || `Update ${files[0].path.split("/").pop()}`);
+      });
+      box.append(list, form);
       return box;
+    }
+
+    graphView(ws) {
+      const ROW = 38;
+      const lanes = new Map([["main", 12]]);
+      const rows = [];
+      for (const agent of ws.agents) {
+        const asking = agent.state === "asking";
+        if (!asking && !agent.changes.size) continue;
+        const n = agent.changes.size;
+        rows.push({ branch: agent.branch, title: agent.branch.split("/").pop(), text: asking ? "Waiting on you" : `${n} uncommitted ${n === 1 ? "file" : "files"}`, asking, open: () => this.openChanges(ws, agent) });
+      }
+      for (const commit of ws.commits) {
+        const who = commit.branch === "main" ? "main" : commit.branch.split("/").pop();
+        rows.push({ branch: commit.branch, title: commit.hash, who, text: commit.msg, done: true, open: () => this.openCommit(ws, commit) });
+      }
+      for (const row of rows) if (!lanes.has(row.branch)) lanes.set(row.branch, 12 + lanes.size * 14);
+      const y = (i) => i * ROW + ROW / 2;
+      const last = rows.length - 1;
+      const width = 12 + lanes.size * 14 + 2;
+      const paths = [`<path d="M12 0V${rows.length * ROW}" />`];
+      const nodes = [];
+      for (const [branch, x] of lanes) {
+        if (branch === "main") continue;
+        const top = rows.findIndex((r) => r.branch === branch);
+        const red = rows[top].asking ? ' class="is-red"' : "";
+        paths.push(`<path${red} d="M${x} ${y(top)}V${y(last) - 26}C${x} ${y(last) - 8} 12 ${y(last) - 14} 12 ${y(last)}" />`);
+      }
+      rows.forEach((row, i) => {
+        const x = lanes.get(row.branch);
+        if (row.asking) nodes.push(`<circle class="is-red-dot" cx="${x}" cy="${y(i)}" r="5" />`);
+        else if (row.done) nodes.push(`<circle cx="${x}" cy="${y(i)}" r="4" />`);
+        else nodes.push(`<circle class="is-open-dot" cx="${x}" cy="${y(i)}" r="4" />`);
+      });
+      const box = el("div", "graph");
+      box.style.setProperty("--rail", `${width}px`);
+      box.innerHTML = `<svg width="${width}" height="${rows.length * ROW}" aria-hidden="true"><g class="graph-lines">${paths.join("")}</g><g class="graph-nodes">${nodes.join("")}</g></svg>`;
+      const list = el("ul");
+      for (const row of rows) {
+        const button = el("button", "graph-row" + (row.asking ? " is-red" : "") + (row.branch === ws.branch ? " is-current" : ""));
+        button.type = "button";
+        const head = el("span", "graph-head");
+        head.append(el("b", null, row.title));
+        if (row.who) head.append(el("i", null, row.who));
+        button.append(head, el("span", "graph-text", row.text));
+        button.addEventListener("click", row.open);
+        const item = el("li");
+        item.append(button);
+        list.append(item);
+      }
+      box.append(list);
+      return box;
+    }
+    openChanges(ws, agent) {
+      this.setBranch(ws, agent.branch);
+      this.showSurface(ws, "terminals");
+      this.setView(agent.state === "asking" ? "graph" : "changes");
+    }
+
+    branchesView(ws) {
+      const list = el("ul", "branches-list");
+      const row = (name, detail, red, pick) => {
+        const button = el("button", "branch-row" + (name === ws.branch ? " is-current" : "") + (red ? " is-red" : ""));
+        button.type = "button";
+        button.append(el("b", null, name), el("span", null, detail));
+        button.addEventListener("click", pick);
+        const item = el("li");
+        item.append(button);
+        list.append(item);
+      };
+      for (const agent of ws.agents) {
+        const ahead = ws.commits.filter((c) => c.branch === agent.branch).length;
+        const bits = [`${ahead} ahead`];
+        if (agent.changes.size) bits.push(`${agent.changes.size} changed`);
+        bits.push(agent.state === "asking" ? "needs you" : agent.state === "done" ? "done" : `${agent.spec.cli} working`);
+        row(agent.branch, bits.join(", "), agent.state === "asking", () => this.setBranch(ws, agent.branch));
+      }
+      row("main", "base branch, no worktree", false, () => this.setBranch(ws, "main"));
+      return list;
     }
 
     /* The demo plays itself: a tab goes red, gets opened, gets answered. One click hands it over. */
@@ -685,6 +970,7 @@
           await clock.sleep(3000);
           if (this.touched || !agent.answer) return;
         }
+        this.setBranch(agent.ws, agent.branch);
         agent.pane.querySelector(".l-ask:not(.is-answered) .ask-yes")?.classList.add("is-pressed");
         await clock.sleep(260);
         if (this.touched || !agent.answer) return;
@@ -698,9 +984,9 @@
 
     async flipPanel() {
       for (;;) {
-        await this.clock.sleep(13000);
+        await this.clock.sleep(8000);
         if (this.touched) return;
-        this.setView(this.view === "files" ? "git" : "files");
+        this.setView(VIEWS[(VIEWS.indexOf(this.view) + 1) % VIEWS.length]);
       }
     }
   }
