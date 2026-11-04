@@ -4,7 +4,7 @@ import Seal from "./Seal.astro";
 
 <header class="top wrap">
   <a class="brand" href="#top" aria-label="YIEN, home">
-    <Seal />
+    <Seal light />
     <span class="wordmark">YIEN</span>
   </a>
   <div class="actions">
@@ -27,6 +27,10 @@ import Seal from "./Seal.astro";
     gap: 32px;
     padding-top: 22px;
     padding-bottom: 22px;
+    background: var(--sumi);
+    box-shadow: 0 0 0 100vmax var(--sumi);
+    clip-path: inset(0 -100vmax);
+    color: var(--on-sumi);
   }
 
   .brand {
@@ -50,7 +54,6 @@ import Seal from "./Seal.astro";
   .github {
     display: block;
     height: 24px;
-    color: var(--sumi);
   }
 
   .github:hover {
@@ -59,16 +62,16 @@ import Seal from "./Seal.astro";
 
   .download {
     padding: 4px 12px;
-    border: 1px solid var(--sumi);
+    border: 1px solid var(--on-sumi);
     border-radius: 5px;
-    background: var(--sumi);
-    color: var(--on-sumi);
+    background: var(--on-sumi);
+    color: var(--sumi);
     font: 500 0.78rem/1.5 var(--mono);
     text-decoration: none;
   }
 
   .download:hover {
     background: none;
-    color: var(--sumi);
+    color: var(--on-sumi);
   }
 </style>
