@@ -18,8 +18,8 @@ Open <http://localhost:5518/>.
 index.html      the page
 css/site.css    styles, including the app's dark and paper themes
 js/data.js      what each simulated agent says and does
-js/sim.js       the window: tabs, split terminals, files and git panel
-js/site.js      starts the windows, the red thread and the closing question
+js/sim.js       the window: tabs, terminals, center tabs and the right panel
+js/site.js      starts the windows, the red thread and the download section
 serve.mjs       static server for local development
 ```
 

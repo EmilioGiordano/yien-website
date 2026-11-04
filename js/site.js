@@ -36,6 +36,28 @@
     })();
   }
 
+  /* ---------- Download: pick a platform, get its command ---------- */
+  const commands = { macOS: "brew install --cask yien", Windows: "winget install yien", Linux: "flatpak install yien" };
+  const osButtons = [...document.querySelectorAll("[data-os]")];
+  const command = document.querySelector("#install-command");
+  const copy = document.querySelector("#install-copy");
+  const setOs = (os) => {
+    command.textContent = commands[os];
+    document.querySelector("#download-button").textContent = `Download for ${os}`;
+    osButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.os === os)));
+    copy.textContent = "Copy";
+  };
+  osButtons.forEach((button) => button.addEventListener("click", () => setOs(button.dataset.os)));
+  copy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(command.textContent);
+      copy.textContent = "Copied";
+    } catch {
+      copy.textContent = "Press Ctrl C";
+    }
+  });
+  setOs(/Win/.test(navigator.platform) ? "Windows" : /Linux/.test(navigator.platform) ? "Linux" : "macOS");
+
   /* ---------- Git: the same window, stopped where an agent needs you ---------- */
   const reviewRoot = document.querySelector("#review-app");
   const review = new YienSim(reviewRoot, data.hero.slice(0, 1), { side: false, still: true, view: "graph", title: "checkout-rewrite" });

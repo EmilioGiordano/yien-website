@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>YIEN: many agents, one thread</title>
-  <meta name="description" content="YIEN is a concept for a terminal workspace that runs your coding agents side by side and only calls you when one of them needs you.">
+  <meta name="description" content="YIEN is a workspace that runs your coding agents side by side in real terminals, with Git and your code in the same window.">
   <meta name="theme-color" content="#0d0c0b">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <script>document.documentElement.classList.add("js")</script>
@@ -29,7 +29,7 @@
       <a href="#changes">Files and git</a>
       <a href="#agents">Agents</a>
     </nav>
-    <a class="btn btn-small" href="#concept">Get YIEN</a>
+    <a class="btn btn-small" href="#download">Get YIEN</a>
   </header>
 
   <main id="top">
@@ -42,7 +42,7 @@
           <div class="hero-side">
             <p class="lead">YIEN is a workspace for your coding agents. Run them in real terminals, split however you like, and review every branch from the same window. You only hear from them when one needs you.</p>
             <p class="actions">
-              <a class="btn" href="#concept">Get YIEN</a>
+              <a class="btn" href="#download">Get YIEN</a>
               <a class="link" href="#tabs">See how it works</a>
             </p>
           </div>
@@ -127,14 +127,22 @@
       </div>
     </section>
 
-    <section class="closing" id="concept" aria-labelledby="concept-title">
+    <section class="closing" id="download" aria-labelledby="download-title">
       <div class="wrap indent closing-grid">
         <div>
-          <h2 id="concept-title"><span class="closing-hook" aria-hidden="true"></span>YIEN doesn't exist. Yet.</h2>
-          <p>It's a concept: an invented product and a design exercise. The agents on this page follow a script, so there's nothing to download.</p>
-          <p class="actions"><a class="btn btn-red" href="#top">Watch the agents again</a></p>
+          <h2 id="download-title"><span class="closing-hook" aria-hidden="true"></span>Put your agents to work.</h2>
+          <p>YIEN is free for personal use and runs on your own machine. Your code, your agents and your accounts stay where they are.</p>
+          <p class="actions"><a class="btn btn-red" href="#download" id="download-button">Download for macOS</a></p>
+          <div class="install">
+            <div class="install-os" role="group" aria-label="Choose a platform">
+              <button type="button" data-os="macOS" aria-pressed="true">macOS</button>
+              <button type="button" data-os="Windows" aria-pressed="false">Windows</button>
+              <button type="button" data-os="Linux" aria-pressed="false">Linux</button>
+            </div>
+            <p class="install-line"><code id="install-command">brew install --cask yien</code><button type="button" id="install-copy">Copy</button></p>
+          </div>
         </div>
-        <div class="app app-bare closing-app" id="closing-app" role="group" aria-label="Simulation of an agent trying to install YIEN and reporting that it doesn't exist."></div>
+        <div class="app app-bare closing-app" id="closing-app" role="group" aria-label="A terminal installing YIEN. You can type in it."></div>
       </div>
     </section>
   </main>
@@ -143,7 +151,7 @@
     <div class="wrap foot-row">
       <span class="seal seal-light" aria-hidden="true">縁</span>
       <p><span lang="ja">縁</span> (en): the bond that ties people and things together.</p>
-      <p>A design concept, not a real product. Agent names belong to their owners.</p>
+      <p>Agent names belong to their owners.</p>
     </div>
   </footer>
 
