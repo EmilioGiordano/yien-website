@@ -22,7 +22,7 @@ const panes = ROWS_PER_SECOND.map((speed, pane) => {
   <div class="wrap">
     <div class="title">
       <div class="headline">
-        <div class="panes" aria-hidden="true" style={`--rows: ${ROWS}`}>
+        <div class="panes" aria-hidden="true" inert style={`--rows: ${ROWS}`}>
           {panes.map(({ duration, log }) => (
             <div class="pane">
               <div class="log" style={`--duration: ${duration}s`} set:text={log} />
@@ -114,6 +114,7 @@ const panes = ROWS_PER_SECOND.map((speed, pane) => {
     background: var(--sumi);
     color: var(--paper);
     font: 500 max(5.5px, 0.7cqw) / 1.15 var(--mono);
+    user-select: none;
   }
 
   .pane {
@@ -181,6 +182,16 @@ const panes = ROWS_PER_SECOND.map((speed, pane) => {
     .log,
     h1::after {
       animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .panes {
+      display: none;
+    }
+
+    .many {
+      mix-blend-mode: normal;
     }
   }
 
