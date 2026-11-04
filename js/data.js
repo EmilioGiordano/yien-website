@@ -67,7 +67,7 @@ window.YIEN_DATA = {
           ],
         },
         {
-          cli: "gemini",
+          cli: "agy",
           task: "Cover cart edge cases",
           delay: 1700,
           script: [
@@ -204,7 +204,7 @@ window.YIEN_DATA = {
           ],
         },
         {
-          cli: "gemini",
+          cli: "agy",
           task: "Speed up the suite",
           delay: 2000,
           script: [
@@ -285,7 +285,7 @@ window.YIEN_DATA = {
           ],
         },
         {
-          cli: "gemini",
+          cli: "agy",
           task: "Search page",
           delay: 1500,
           script: [
