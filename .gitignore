@@ -1,3 +1,6 @@
 .claude/
+.astro/
+dist/
 node_modules/
 .playwright-mcp/
+recorridos/

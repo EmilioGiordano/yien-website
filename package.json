@@ -1,0 +1,26 @@
+{
+  "name": "yien",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --port 5518",
+    "build": "astro build",
+    "preview": "astro preview --port 5518",
+    "check": "astro check",
+    "test": "vitest run",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@astrojs/preact": "6.1.1",
+    "astro": "7.4.5",
+    "preact": "11.1.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.2",
+    "typescript": "6.0.3",
+    "vitest": "5.1.0"
+  }
+}
