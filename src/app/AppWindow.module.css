@@ -7,6 +7,11 @@
   --app-faint: #86827a;
   --app-red: var(--shu-bright);
   --app-soft: #1c1a17;
+  --app-code-string: #a9bd8b;
+  --app-code-number: #d4b27a;
+  --app-code-keyword: #8fb0d6;
+  --app-code-call: #e2cfa1;
+  --app-code-type: #b7a6d6;
   position: relative;
   border: 1px solid var(--app-line);
   border-radius: 10px;
@@ -24,6 +29,11 @@
   --app-faint: #706d65;
   --app-red: var(--shu);
   --app-soft: #eeede4;
+  --app-code-string: #4c6a2a;
+  --app-code-number: #8a5f10;
+  --app-code-keyword: #2a5a8c;
+  --app-code-call: #6b4a1e;
+  --app-code-type: #654c96;
 }
 
 :where(.window button) {

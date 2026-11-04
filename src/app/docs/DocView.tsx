@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useMemo, useRef } from "preact/hooks";
 import type { Simulation } from "../../sim/simulation";
 import type { Doc, FileChange } from "../../sim/types";
 import { DiffLines } from "./DiffLines";
 import styles from "./DocView.module.css";
+import { highlight } from "./highlight";
 
 function FileDiff({ file }: { file: FileChange }) {
   return (
@@ -24,6 +25,8 @@ function Editor({
 }) {
   const area = useRef<HTMLTextAreaElement>(null);
   const gutter = useRef<HTMLPreElement>(null);
+  const colored = useRef<HTMLPreElement>(null);
+  const tokens = useMemo(() => highlight(doc.path, doc.text), [doc.path, doc.text]);
 
   useEffect(() => {
     if (doc.autoFocus) area.current?.focus({ preventScroll: true });
@@ -44,19 +47,35 @@ function Editor({
           .map((_, index) => index + 1)
           .join("\n")}
       </pre>
-      <textarea
-        ref={area}
-        class={styles.text}
-        spellcheck={false}
-        wrap="off"
-        aria-label={`Edit ${doc.path}`}
-        value={doc.text}
-        onInput={(event) => sim.editDoc(wsId, doc.id, event.currentTarget.value)}
-        onKeyDown={save}
-        onScroll={(event) => {
-          gutter.current!.scrollTop = event.currentTarget.scrollTop;
-        }}
-      />
+      <div class={styles.code}>
+        <pre ref={colored} class={styles.colored} aria-hidden="true">
+          {tokens.map(({ kind, text }, index) =>
+            kind ? (
+              <span key={index} class={styles[kind]}>
+                {text}
+              </span>
+            ) : (
+              text
+            ),
+          )}
+          {"\n"}
+        </pre>
+        <textarea
+          ref={area}
+          class={styles.text}
+          spellcheck={false}
+          wrap="off"
+          aria-label={`Edit ${doc.path}`}
+          value={doc.text}
+          onInput={(event) => sim.editDoc(wsId, doc.id, event.currentTarget.value)}
+          onKeyDown={save}
+          onScroll={({ currentTarget: { scrollTop, scrollLeft } }) => {
+            gutter.current!.scrollTop = scrollTop;
+            colored.current!.scrollTop = scrollTop;
+            colored.current!.scrollLeft = scrollLeft;
+          }}
+        />
+      </div>
     </div>
   );
 }
