@@ -1,5 +1,6 @@
 import { memo } from "preact/compat";
 import type { Simulation } from "../sim/simulation";
+import { paneGrid } from "../sim/paneGrid";
 import { TERMINALS_SURFACE, type Workspace } from "../sim/types";
 import { CenterTabs } from "./CenterTabs";
 import { DocView } from "./docs/DocView";
@@ -17,31 +18,34 @@ interface WorkspaceProps {
 
 const WorkspaceView = memo(({ sim, ws, active, withTabs, splittable }: WorkspaceProps) => {
   const showTerminals = ws.surface === TERMINALS_SURFACE;
+  const grid = paneGrid(ws.layout);
   return (
     <div class={styles.workspace} hidden={!active}>
       {withTabs && <CenterTabs sim={sim} ws={ws} />}
-      <div class={styles.panes} data-layout={ws.layout} hidden={!showTerminals}>
-        {ws.terminals.map((terminal) =>
-          terminal.kind === "agent" ? (
-            <AgentPane
-              key={terminal.id}
-              sim={sim}
-              wsId={ws.id}
-              terminal={terminal}
-              focused={ws.focusedTerminalId === terminal.id}
-              splittable={splittable}
-            />
+      <div
+        class={styles.panes}
+        data-layout={ws.layout}
+        hidden={!showTerminals}
+        style={{
+          "--columns": grid.columns,
+          "--rows": grid.rows,
+          "--first-pane-rows": grid.firstPaneRows,
+        }}
+      >
+        {ws.terminals.map((terminal, index) => {
+          const pane = {
+            sim,
+            wsId: ws.id,
+            focused: ws.focusedTerminalId === terminal.id,
+            splittable,
+            hidden: index >= ws.layout,
+          };
+          return terminal.kind === "agent" ? (
+            <AgentPane key={terminal.id} terminal={terminal} {...pane} />
           ) : (
-            <ShellPane
-              key={terminal.id}
-              sim={sim}
-              wsId={ws.id}
-              terminal={terminal}
-              focused={ws.focusedTerminalId === terminal.id}
-              splittable={splittable}
-            />
-          ),
-        )}
+            <ShellPane key={terminal.id} terminal={terminal} {...pane} />
+          );
+        })}
       </div>
       {!showTerminals && (
         <div class={styles.docs}>
