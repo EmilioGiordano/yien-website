@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YIEN: many agents, one thread</title>
+  <meta name="description" content="YIEN is a concept for a terminal workspace that runs your coding agents side by side and only calls you when one of them needs you.">
+  <meta name="theme-color" content="#0d0c0b">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <script>document.documentElement.classList.add("js")</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1+Code:wght@400;500;700&family=Shippori+Mincho+B1:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <svg class="defs" aria-hidden="true" width="0" height="0">
+    <filter id="ink"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="1.6"/></filter>
+  </svg>
+
+  <header class="top wrap">
+    <a class="brand" href="#top" aria-label="YIEN, home">
+      <span class="seal" aria-hidden="true">縁</span>
+      <span class="wordmark">YIEN</span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#tabs">Tabs</a>
+      <a href="#terminals">Terminals</a>
+      <a href="#changes">Files and git</a>
+      <a href="#agents">Agents</a>
+    </nav>
+    <a class="btn btn-small" href="#concept">Get YIEN</a>
+  </header>
+
+  <main id="top">
+    <span class="thread" aria-hidden="true"></span>
+
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-copy">
+          <h1>Many agents.<br>One thread.</h1>
+          <div class="hero-side">
+            <p class="lead">YIEN is a terminal workspace for your coding agents. Each one works in its own tab, in real terminals, on its own branch. You only hear about it when one of them needs you.</p>
+            <p class="actions">
+              <a class="btn" href="#concept">Get YIEN</a>
+              <a class="link" href="#tabs">See how it works</a>
+            </p>
+          </div>
+        </div>
+        <div class="app" id="hero-app" role="group" aria-label="Simulation of the YIEN window: five tabs of coding agents at work, with a file and git panel. Tabs can be opened and requests can be answered."></div>
+        <noscript><p class="note">This window needs JavaScript. It shows agents working in tabs and terminals.</p></noscript>
+      </div>
+    </section>
+
+    <section class="section" id="tabs" aria-labelledby="tabs-title">
+      <div class="wrap columns">
+        <div class="big-tabs" data-tab-demo aria-hidden="true">
+          <div class="big-tab"><span class="big-glyph"></span><b>checkout-rewrite</b><span class="big-sub"></span></div>
+          <div class="big-tab"><span class="big-glyph"></span><b>auth-migration</b><span class="big-sub"></span></div>
+          <div class="big-tab"><span class="big-glyph"></span><b>docs-quickstart</b><span class="big-sub"></span></div>
+          <div class="big-tab"><span class="big-glyph"></span><b>flaky-tests</b><span class="big-sub"></span></div>
+          <div class="big-tab"><span class="big-glyph"></span><b>release-notes</b><span class="big-sub"></span></div>
+        </div>
+        <div class="prose">
+          <h2 id="tabs-title">Stop checking on them.</h2>
+          <p>A tab is one piece of work: its terminals, its branch, its files. The sidebar tells you how each one is going, so you can get on with your own.</p>
+          <dl class="states">
+            <div><dt>Working</dt><dd>Leave it alone.</dd></div>
+            <div><dt>Done</dt><dd>Read it when you're ready.</dd></div>
+            <div><dt class="is-red">Needs you</dt><dd>An agent is waiting for your answer. It's the only red in the app, so you can't miss it.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="section is-dark" id="terminals" aria-labelledby="terminals-title">
+      <div class="wrap indent">
+        <div class="section-head">
+          <h2 id="terminals-title">One terminal, or four.</h2>
+          <p>A small fix gets one agent. A rewrite gets four. Split a tab as far as you like, and whatever you can't see keeps running.</p>
+        </div>
+        <div class="layout-bar">
+          <div class="layout-picker" role="group" aria-label="Number of terminals">
+            <button type="button" data-set-layout="1" aria-pressed="false" aria-label="One terminal"><i class="grid-1"><b></b></i></button>
+            <button type="button" data-set-layout="2" aria-pressed="false" aria-label="Two terminals"><i class="grid-2"><b></b><b></b></i></button>
+            <button type="button" data-set-layout="3" aria-pressed="false" aria-label="Three terminals"><i class="grid-3"><b></b><b></b><b></b></i></button>
+            <button type="button" data-set-layout="4" aria-pressed="true" aria-label="Four terminals"><i class="grid-4"><b></b><b></b><b></b><b></b></i></button>
+          </div>
+          <p class="keys"><kbd>Ctrl D</kbd> split right <kbd>Ctrl Shift D</kbd> split down</p>
+        </div>
+        <div class="app app-bare" id="splits-app" role="group" aria-label="Simulation of four agents working in split terminals. The buttons above change how many are shown."></div>
+      </div>
+    </section>
+
+    <section class="section" id="changes" aria-labelledby="changes-title">
+      <div class="wrap indent">
+        <div class="section-head">
+          <h2 id="changes-title">See what they change as they change it.</h2>
+          <p>The right panel follows the tab. Files marks what's been touched, and git shows the diff. Every tab gets its own worktree, so two agents never trip over the same checkout.</p>
+        </div>
+        <div class="app is-paper review" role="img" aria-label="The YIEN file tree, a diff of coupon.ts, and a git history with one branch per tab.">
+          <div class="review-tree">
+            <p class="pane-title">Files</p>
+            <ul class="tree">
+              <li class="is-dir" style="padding-left:12px"><span>src/</span></li>
+              <li class="is-dir" style="padding-left:24px"><span>api/</span></li>
+              <li class="is-changed" style="padding-left:36px"><span>totals.ts</span><em>A</em></li>
+              <li style="padding-left:36px"><span>orders.ts</span></li>
+              <li class="is-dir" style="padding-left:24px"><span>cart/</span></li>
+              <li style="padding-left:36px"><span>Cart.tsx</span></li>
+              <li class="is-changed is-open" style="padding-left:36px"><span>coupon.ts</span><em>M</em></li>
+              <li style="padding-left:36px"><span>totals.ts</span></li>
+              <li class="is-changed" style="padding-left:36px"><span>useCart.ts</span><em>M</em></li>
+              <li class="is-dir" style="padding-left:12px"><span>tests/</span></li>
+              <li class="is-changed" style="padding-left:24px"><span>cart.test.ts</span><em>A</em></li>
+              <li style="padding-left:12px"><span>package.json</span></li>
+            </ul>
+          </div>
+          <div class="review-diff">
+            <p class="pane-title">src/cart/coupon.ts <span>+3 −4</span></p>
+<pre class="diff"><span>  export function applyCoupon(cart, coupon) {</span>
+<span>    const items = cart.items.filter(eligible);</span>
+<span class="is-del">-   const rounded = items.map(discount).map(round);</span>
+<span class="is-del">-   const off = round(rounded.reduce(sum, 0));</span>
+<span class="is-del">-   if (off > cart.subtotal) return cart;</span>
+<span class="is-del">-   return { ...cart, off };</span>
+<span class="is-add">+   const off = round(items.map(discount).reduce(sum, 0));</span>
+<span class="is-add">+   return { ...cart, off: Math.min(off, cart.subtotal) };</span>
+<span class="is-add">+   // rounded once, on the total: see cart.test.ts</span>
+<span>  }</span>
+<span> </span>
+<span>  export function removeCoupon(cart) {</span>
+<span>    const { off, ...rest } = cart;</span>
+<span>    return rest;</span>
+<span>  }</span></pre>
+          </div>
+          <div class="review-git">
+            <p class="pane-title">Git</p>
+            <div class="graph">
+              <svg viewBox="0 0 56 210" width="56" height="210" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M12 0V210"/>
+                  <path d="M44 53V88C44 108 12 103 12 123"/>
+                </g>
+                <path d="M28 18V142C28 160 12 156 12 175" fill="none" stroke="var(--a-red)" stroke-width="2"/>
+                <circle cx="28" cy="18" r="5" fill="var(--a-red)"/>
+                <g fill="currentColor"><circle cx="44" cy="53" r="4"/><circle cx="44" cy="88" r="4"/><circle cx="12" cy="123" r="4"/><circle cx="12" cy="175" r="4"/></g>
+              </svg>
+              <ul>
+                <li class="is-red"><b>yien/webhooks</b><span>Migration waiting on you</span></li>
+                <li><b>a3f91c2</b><span>Compute totals on the server</span></li>
+                <li><b>7be204d</b><span>Round coupon discounts once</span></li>
+                <li><b>04ab7d6</b><span>Merge yien/checkout-rewrite</span></li>
+                <li class="is-gap"><b>e41b07a</b><span>Split the cart out of the page</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section is-dark" id="agents" aria-labelledby="agents-title">
+      <div class="wrap indent">
+        <div class="section-head">
+          <h2 id="agents-title">Bring the agents you already use.</h2>
+          <p>YIEN isn't another agent. It runs the command-line tools you already have, with your own accounts, in real terminals. If it runs in a shell, it runs here.</p>
+        </div>
+      </div>
+      <div class="wrap">
+        <ul class="branches">
+          <li><b>Claude Code</b><code>claude</code></li>
+          <li><b>Codex</b><code>codex</code></li>
+          <li><b>Gemini CLI</b><code>gemini</code></li>
+          <li><b>OpenCode</b><code>opencode</code></li>
+          <li><b>Aider</b><code>aider</code></li>
+          <li><b>Whatever you use next</b><code>your-tool</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="closing" id="concept" aria-labelledby="concept-title">
+      <div class="wrap closing-grid">
+        <div>
+          <h2 id="concept-title">This one needs you.</h2>
+          <p>YIEN doesn't exist. It's a concept: an invented product and a design exercise, so there's nothing to download. The windows on this page are a simulation, and no agent was harmed.</p>
+        </div>
+        <div class="last-ask">
+          <p class="last-q">Should YIEN exist?</p>
+          <code>yien --become-real</code>
+          <p class="last-actions" id="concept-actions">
+            <button class="btn btn-ink" type="button" data-answer="yes">Allow</button>
+            <button class="btn btn-line" type="button" data-answer="no">Deny</button>
+          </p>
+          <p class="last-reply" id="concept-reply" role="status" hidden></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-row">
+      <span class="seal seal-light" aria-hidden="true">縁</span>
+      <p><span lang="ja">縁</span> (en): the bond that ties people and things together.</p>
+      <p>A design concept, not a real product. Agent names belong to their owners.</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/sim.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>
