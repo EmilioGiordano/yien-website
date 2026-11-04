@@ -57,7 +57,57 @@
   text-align: right;
 }
 
+.code {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* The colored copy sits under the textarea, whose own text is invisible. */
+.colored {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 10px 14px;
+  overflow: hidden;
+  color: var(--app-text);
+  font: inherit;
+  line-height: 1.7;
+  white-space: pre;
+  pointer-events: none;
+}
+
+.comment {
+  color: var(--app-faint);
+}
+
+.string {
+  color: var(--app-code-string);
+}
+
+.number {
+  color: var(--app-code-number);
+}
+
+.keyword {
+  color: var(--app-code-keyword);
+}
+
+.call {
+  color: var(--app-code-call);
+}
+
+.type {
+  color: var(--app-code-type);
+}
+
+.text:focus-visible {
+  outline: none;
+}
+
 .text {
+  position: relative;
+  display: block;
   width: 100%;
   height: 100%;
   padding: 10px 14px;
@@ -66,7 +116,7 @@
   outline: none;
   resize: none;
   background: none;
-  color: var(--app-text);
+  color: transparent;
   caret-color: var(--app-text);
   font: inherit;
   line-height: 1.7;
