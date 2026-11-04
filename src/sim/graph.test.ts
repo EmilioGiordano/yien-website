@@ -27,14 +27,19 @@ describe("buildGraph", () => {
     expect(graph.nodes[0].x).toBeGreaterThan(graph.nodes[1].x);
   });
 
-  it("marks a waiting agent's lane and node", () => {
-    const graph = buildGraph(
-      git({
-        agents: [{ terminalId: "t1", cli: "claude", branch: "tab/claude", status: "asking" }],
-      }),
-    );
-    expect(graph.rows[0]).toMatchObject({ text: "Waiting on you", asking: true });
+  const asking: GitState["agents"] = [
+    { terminalId: "t1", cli: "claude", branch: "tab/claude", status: "asking" },
+  ];
+
+  it("marks the uncommitted work of an agent that's waiting", () => {
+    const graph = buildGraph(git({ agents: asking, changes: { "tab/claude": [file] } }));
+    expect(graph.rows[0]).toMatchObject({ text: "1 uncommitted file", asking: true });
     expect(graph.nodes[0].kind).toBe("asking");
     expect(graph.lines[1].asking).toBe(true);
+  });
+
+  it("adds no row for a waiting agent with nothing uncommitted", () => {
+    const graph = buildGraph(git({ agents: asking }));
+    expect(graph.rows.map((row) => row.title)).toEqual(["base"]);
   });
 });

@@ -8,9 +8,9 @@ import styles from "./GitDemo.module.css";
 
 const VIEWS: { id: PanelView; title: string; text: string }[] = [
   {
-    id: "graph",
-    title: "Graph",
-    text: "Every commit on every branch in the tab. Open one to read what it did. An agent waiting on you shows up in red.",
+    id: "files",
+    title: "Files",
+    text: "The whole tree, with what's been touched marked. Open a file and edit it yourself.",
   },
   {
     id: "changes",
@@ -18,16 +18,17 @@ const VIEWS: { id: PanelView; title: string; text: string }[] = [
     text: "What's on this branch and not committed yet. Open a diff, then commit it from here.",
   },
   {
+    id: "graph",
+    title: "Graph",
+    text: "Every commit on every branch in the tab. Open one to read what it did. Work waiting on your answer shows up in red.",
+  },
+  {
     id: "branches",
     title: "Branches",
     text: "One per agent, each in its own worktree. Pick one and the panel follows it.",
   },
-  {
-    id: "files",
-    title: "Files",
-    text: "The whole tree, with what's been touched marked. Open a file and edit it yourself.",
-  },
 ];
+const FIRST_VIEW: PanelView = "graph";
 const CYCLE_MS = 6000;
 
 /* Each view also opens what you'd reach for from it. */
@@ -53,12 +54,12 @@ export function GitDemo() {
   const [sim] = useState(
     () =>
       new Simulation(heroWorkspaces.slice(0, 1), {
-        panelView: "graph",
+        panelView: FIRST_VIEW,
         fileContents,
         still: true,
       }),
   );
-  const [view, setView] = useState<PanelView>("graph");
+  const [view, setView] = useState(FIRST_VIEW);
   const root = useRef<HTMLDivElement>(null);
   const picked = useRef(false);
 
@@ -69,7 +70,7 @@ export function GitDemo() {
 
   useEffect(() => {
     // the script settles in microtasks, so it's done by the next task
-    const settle = setTimeout(() => select("graph"));
+    const settle = setTimeout(() => select(FIRST_VIEW));
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return () => clearTimeout(settle);
 
     let visible = false;
@@ -77,7 +78,7 @@ export function GitDemo() {
       visible = entry.isIntersecting;
     });
     observer.observe(root.current!);
-    let index = 0;
+    let index = VIEWS.findIndex(({ id }) => id === FIRST_VIEW);
     const timer = setInterval(() => {
       if (picked.current || !visible || document.hidden) return;
       index = (index + 1) % VIEWS.length;
