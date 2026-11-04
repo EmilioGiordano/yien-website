@@ -1,0 +1,56 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding-right: 14px;
+  color: var(--app-dim);
+  line-height: 1.75;
+  text-align: left;
+  white-space: nowrap;
+}
+
+button.row:hover {
+  background: var(--app-soft);
+  color: var(--app-text);
+}
+
+.name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row em {
+  font-style: normal;
+  font-weight: 700;
+}
+
+.dir {
+  color: var(--app-faint);
+}
+
+.changed {
+  color: var(--app-text);
+}
+
+.open {
+  background: var(--app-soft);
+}
+
+.fresh {
+  animation: fresh 1.4s ease-out;
+}
+
+@keyframes fresh {
+  from {
+    background: var(--app-text);
+    color: var(--app-bg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fresh {
+    animation: none;
+  }
+}

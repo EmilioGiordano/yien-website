@@ -1,0 +1,210 @@
+.log {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  overflow: hidden;
+}
+
+.log > * {
+  flex: none;
+}
+
+.shell {
+  gap: 2px;
+}
+
+.banner {
+  display: grid;
+  padding: 6px 10px;
+  border: 1px solid var(--app-line);
+  border-radius: 5px;
+  line-height: 1.4;
+}
+
+.banner b {
+  font-weight: 700;
+}
+
+.banner span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--app-faint);
+}
+
+.prompt {
+  padding: 3px 8px;
+  background: var(--app-soft);
+  font-weight: 500;
+}
+
+.think {
+  color: var(--app-dim);
+}
+
+.message {
+  white-space: pre-wrap;
+}
+
+.plan {
+  padding: 2px 10px;
+  border-left: 1px solid var(--app-line);
+  color: var(--app-dim);
+}
+
+.plan li {
+  position: relative;
+  padding-left: 18px;
+}
+
+.plan li::before {
+  content: "○";
+  position: absolute;
+  left: 0;
+  color: var(--app-faint);
+}
+
+.plan .done {
+  color: var(--app-faint);
+  text-decoration: line-through;
+}
+
+.plan .done::before {
+  content: "✓";
+}
+
+.tool {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.call {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.call b {
+  font-weight: 700;
+}
+
+.toolGlyph {
+  flex: none;
+  width: 1em;
+  color: var(--app-dim);
+}
+
+.arg {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--app-dim);
+}
+
+.count {
+  margin-left: auto;
+  padding-left: 6px;
+  color: var(--app-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.out {
+  padding-left: 1.6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--app-faint);
+}
+
+.bar {
+  display: block;
+  height: 3px;
+  margin: 3px 0 0 1.6em;
+  background: var(--app-line);
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--app-text);
+}
+
+.diff {
+  margin: 3px 0 0 1.6em;
+  padding: 3px 0;
+  overflow: hidden;
+  font-size: 0.94em;
+  line-height: 1.5;
+}
+
+.ask {
+  padding: 8px 10px;
+  border: 1px solid var(--app-red);
+  border-radius: 5px;
+}
+
+.answered {
+  border-color: var(--app-line);
+}
+
+.askText {
+  font-weight: 500;
+}
+
+.ask code {
+  display: block;
+  margin: 2px 0 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--app-dim);
+}
+
+.answered code {
+  margin-bottom: 0;
+}
+
+.said {
+  color: var(--app-faint);
+}
+
+.options {
+  display: grid;
+}
+
+.option {
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: var(--app-dim);
+  text-align: left;
+}
+
+.option:hover,
+.option:focus-visible,
+.pressed {
+  background: var(--app-text);
+  color: var(--app-bg);
+}
+
+.yes:not(:hover, :focus-visible, .pressed) {
+  color: var(--app-text);
+}
+
+.yes {
+  font-weight: 500;
+}
+
+.command,
+.output {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.output {
+  color: var(--app-dim);
+}

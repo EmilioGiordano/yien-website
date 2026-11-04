@@ -1,0 +1,38 @@
+.tabs {
+  flex: none;
+  display: flex;
+  overflow: hidden;
+  border-bottom: 1px solid var(--app-line);
+  background: var(--app-bar);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border-right: 1px solid var(--app-line);
+  color: var(--app-faint);
+}
+
+.on {
+  background: var(--app-bg);
+  color: var(--app-text);
+  box-shadow: 0 1px 0 var(--app-bg);
+}
+
+.tab button {
+  padding: 5px 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab button:hover {
+  color: var(--app-text);
+}
+
+.tab .close {
+  flex: none;
+  padding: 5px 8px 5px 0;
+  color: var(--app-faint);
+}

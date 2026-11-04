@@ -1,0 +1,76 @@
+.doc {
+  padding-bottom: 12px;
+}
+
+.path {
+  padding: 6px 14px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--app-line);
+  color: var(--app-dim);
+  text-overflow: ellipsis;
+  white-space: pre;
+}
+
+.commit {
+  display: grid;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--app-line);
+}
+
+.commit b {
+  font-weight: 700;
+}
+
+.commit span,
+.empty {
+  color: var(--app-faint);
+}
+
+.empty {
+  padding: 6px 14px;
+}
+
+.diff {
+  padding: 6px 0 14px;
+  overflow-x: auto;
+  line-height: 1.7;
+  scrollbar-width: thin;
+}
+
+.editor {
+  display: grid;
+  grid-template: auto minmax(0, 1fr) / auto minmax(0, 1fr);
+  height: 100%;
+}
+
+.editor .path {
+  grid-column: 1 / -1;
+}
+
+.gutter {
+  margin: 0;
+  padding: 10px 10px 10px 14px;
+  overflow: hidden;
+  border-right: 1px solid var(--app-line);
+  color: var(--app-faint);
+  line-height: 1.7;
+  text-align: right;
+}
+
+.text {
+  width: 100%;
+  height: 100%;
+  padding: 10px 14px;
+  overflow: auto;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: none;
+  color: var(--app-text);
+  caret-color: var(--app-text);
+  font: inherit;
+  line-height: 1.7;
+  white-space: pre;
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-line) transparent;
+}

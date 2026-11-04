@@ -1,0 +1,148 @@
+.pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--app-bg);
+  container-type: inline-size;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 12px;
+  border-bottom: 1px solid var(--app-line);
+  background: var(--app-bar);
+  white-space: nowrap;
+}
+
+.focused .head {
+  box-shadow: inset 0 -1px 0 var(--app-dim);
+}
+
+.glyph {
+  flex: none;
+  width: 1.2em;
+  color: var(--app-dim);
+}
+
+.asking .glyph {
+  color: var(--app-red);
+}
+
+.title {
+  font-weight: 500;
+}
+
+.focused .title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.detail {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--app-dim);
+}
+
+.headButton {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  color: var(--app-faint);
+}
+
+.headButton:hover {
+  background: var(--app-soft);
+  color: var(--app-text);
+}
+
+.split::before {
+  content: "";
+  width: 11px;
+  height: 9px;
+  border: 1px solid currentColor;
+  background: linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat;
+}
+
+.status {
+  flex: none;
+  min-height: 1.5em;
+  padding: 2px 12px;
+  color: var(--app-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusAsking {
+  color: var(--app-red);
+}
+
+.input {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 12px;
+  padding: 4px 2px;
+  border-block: 1px solid var(--app-line);
+  cursor: text;
+}
+
+.input:focus-within {
+  border-color: var(--app-dim);
+}
+
+.caret {
+  color: var(--app-dim);
+}
+
+.field {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--app-text);
+  caret-color: var(--app-text);
+  font: inherit;
+}
+
+.field::placeholder {
+  color: var(--app-faint);
+}
+
+.foot {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 3px 14px 6px;
+  color: var(--app-faint);
+  font-size: 0.92em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.meter {
+  font-variant-numeric: tabular-nums;
+}
+
+.shellRow {
+  display: flex;
+  gap: 8px;
+  cursor: text;
+}
+
+.prompt {
+  flex: none;
+}

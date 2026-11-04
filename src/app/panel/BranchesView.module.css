@@ -1,0 +1,33 @@
+.row {
+  display: grid;
+  width: 100%;
+  padding: 6px 14px 6px 12px;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.row:hover {
+  background: var(--app-soft);
+}
+
+.row b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.row span {
+  color: var(--app-faint);
+}
+
+.current {
+  border-left-color: var(--app-text);
+  background: var(--app-soft);
+}
+
+.asking b,
+.asking span {
+  color: var(--app-red);
+}

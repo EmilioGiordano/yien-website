@@ -1,0 +1,72 @@
+.empty {
+  padding: 6px 14px;
+  color: var(--app-faint);
+}
+
+.sum {
+  padding: 2px 14px 8px;
+  color: var(--app-dim);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1.4em minmax(0, 1fr) auto;
+  gap: 4px;
+  width: 100%;
+  padding: 2px 14px;
+  line-height: 1.75;
+  text-align: left;
+}
+
+.row:hover {
+  background: var(--app-soft);
+}
+
+.row em {
+  font-style: normal;
+  font-weight: 700;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  color: var(--app-faint);
+}
+
+.commit {
+  display: flex;
+  gap: 6px;
+  margin: 10px 14px 4px;
+}
+
+.commit input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  border: 1px solid var(--app-line);
+  border-radius: 4px;
+  background: none;
+  color: var(--app-text);
+  font: inherit;
+}
+
+.commit input:focus {
+  border-color: var(--app-dim);
+  outline: none;
+}
+
+.commit input::placeholder {
+  color: var(--app-faint);
+}
+
+.commit button {
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: var(--app-text);
+  color: var(--app-bg);
+  font-weight: 500;
+}
