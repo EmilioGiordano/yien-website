@@ -156,7 +156,7 @@ window.YIEN_DATA = {
     },
     {
       name: "docs-quickstart",
-      layout: 1,
+      layout: 2,
       delay: 400,
       hold: 16000,
       files: ["docs/index.md", "docs/quickstart.md", "docs/install.md"],
@@ -177,6 +177,14 @@ window.YIEN_DATA = {
             { t: "commit", hash: "04ab7d6", msg: "Shorten the quickstart to four steps" },
             { t: "msg", text: "Down to four steps, and it runs from a clean container in 42 seconds." },
           ],
+        },
+        {
+          shell: true,
+          keep: true,
+          task: "docs server",
+          delay: 600,
+          run: "pnpm docs:dev",
+          out: ["> docs@2.4.0 dev", "ready in 612 ms", "Local: http://localhost:4321/", "hmr update /quickstart.md"],
         },
       ],
     },

@@ -5,10 +5,10 @@
   /* ---------- The windows ---------- */
   new YienSim(document.querySelector("#hero-app"), data.hero, { driver: true });
 
-  new YienSim(document.querySelector("#closing-app"), data.closing, { chrome: false });
+  new YienSim(document.querySelector("#closing-app"), data.closing, { chrome: false, title: "install" });
 
   const splitsRoot = document.querySelector("#splits-app");
-  const splits = new YienSim(splitsRoot, data.splits, { chrome: false });
+  const splits = new YienSim(splitsRoot, data.splits, { chrome: false, title: "search-rebuild" });
   const layoutButtons = [...document.querySelectorAll("[data-set-layout]")];
   const setLayout = (count) => {
     splits.setLayout(count);
