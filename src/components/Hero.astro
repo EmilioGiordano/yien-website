@@ -1,32 +1,39 @@
 ---
+import art from "../assets/hero-art.svg?raw";
 import { HeroApp } from "../app/islands/HeroApp";
 ---
 
 <section class="hero">
-  <div class="wrap">
+  <div class="backdrop"></div>
+  <div class="art" aria-hidden="true">
+    <div class="defs" set:html={art} />
+    <svg class="output" viewBox="0 0 1080 2256">
+      <use href="#hero-output"></use>
+      <use href="#hero-output" y="1128"></use>
+    </svg>
+    <svg class="glyph" viewBox="0 0 1080 1128">
+      <use href="#hero-glyph"></use>
+    </svg>
+    <div class="bright">
+      <svg class="output" viewBox="0 0 1080 2256">
+        <use href="#hero-output"></use>
+        <use href="#hero-output" y="1128"></use>
+      </svg>
+    </div>
+  </div>
+  <span class="strand" aria-hidden="true"></span>
+  <div class="wrap stage">
     <div class="copy">
       <h1>
         Many agents.
         <br />
         One thread.
       </h1>
-      <div>
-        <p class="lead">
-          YIEN is a workspace for your coding agents. Run them in real terminals, split however you
-          like, and review every branch from the same window. You only hear from them when one needs
-          you.
-        </p>
-        <p class="actions">
-          <a class="btn" href="#download">
-            Get YIEN
-          </a>
-          <a class="link" href="#tabs">
-            See how it works
-          </a>
-        </p>
-      </div>
+      <p class="lead">
+        A workspace for your coding agents. You only hear from them when one needs you.
+      </p>
     </div>
-    <div data-thread-start>
+    <div class="window" data-thread-start>
       <HeroApp client:load />
     </div>
     <noscript>
@@ -39,40 +46,168 @@ import { HeroApp } from "../app/islands/HeroApp";
 
 <style>
   .hero {
+    /* The stem of 糸 lines up with the page's thread. generate-hero-art.py prints these fractions. */
+    --thread-x: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad)));
+    --art-width: clamp(420px, min(50vw, 78svh), 700px);
+    --art-height: calc(var(--art-width) * 1.0444);
+    --art-top: 60px;
+    --stem-x: 0.2325;
+    --stem-y: 0.4548;
+
     position: relative;
-    padding: clamp(28px, 5vw, 64px) 0 0;
+    overflow: clip;
+  }
+
+  .backdrop {
+    position: absolute;
+    inset: 0 0 clamp(120px, 22vh, 220px);
+    background: var(--sumi);
+  }
+
+  .art {
+    position: absolute;
+    top: var(--art-top);
+    left: var(--thread-x);
+    width: var(--art-width);
+    height: var(--art-height);
+    margin-left: calc(var(--art-width) * var(--stem-x) * -1);
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .defs,
+  .output,
+  .glyph,
+  .bright {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .output {
+    fill: var(--sumi-line);
+    font: 500 12px/1 var(--mono);
+    white-space: pre;
+    will-change: transform;
+  }
+
+  .glyph {
+    fill: var(--sumi-line);
+  }
+
+  .bright {
+    height: 100%;
+    clip-path: url(#hero-kanji);
+  }
+
+  .bright .output {
+    fill: var(--paper);
+    font-weight: 700;
+  }
+
+  .strand {
+    position: absolute;
+    top: calc(var(--art-top) + var(--art-height) * var(--stem-y));
+    left: var(--thread-x);
+    width: 2px;
+    height: var(--art-height);
+    background: var(--thread);
+    transform-origin: top;
+  }
+
+  /* The art prints once, the thread is pulled out of it, and the output keeps flowing. */
+  @media (prefers-reduced-motion: no-preference) {
+    .art {
+      animation: print 1.1s steps(94) both;
+    }
+
+    .output {
+      animation: output 75s steps(94) infinite;
+    }
+
+    .strand {
+      animation: pull 0.7s 1.1s cubic-bezier(0.3, 0, 0.1, 1) both;
+    }
+  }
+
+  @keyframes print {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes output {
+    to {
+      transform: translateY(-50%);
+    }
+  }
+
+  @keyframes pull {
+    from {
+      transform: scaleY(0);
+    }
+  }
+
+  .stage {
+    position: relative;
   }
 
   .copy {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
-    gap: 24px clamp(24px, 5vw, 72px);
-    align-items: end;
-    margin-bottom: clamp(32px, 5vw, 56px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: calc(var(--art-top) + var(--art-height) * 0.88);
+    margin-left: calc(var(--art-width) * 0.74);
+    padding-bottom: clamp(28px, 3.4vw, 44px);
+    color: var(--paper);
   }
 
   h1 {
-    font-size: clamp(3.1rem, 7.4vw, 6.6rem);
-    line-height: 1;
+    font-size: clamp(3.3rem, 7.6vw, 6.85rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    white-space: nowrap;
   }
 
   .lead {
-    margin-bottom: 22px;
+    max-width: 44ch;
+    margin-top: clamp(20px, 2.4vw, 32px);
+    color: var(--on-sumi-muted);
   }
 
-  .link {
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
+  .window {
+    position: relative;
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 1px var(--sumi-line),
+      0 30px 60px -30px rgb(13 12 11 / 55%);
   }
 
   .note {
     padding: 24px 0;
-    color: var(--pencil);
+    color: var(--on-sumi-muted);
   }
 
   @media (max-width: 760px) {
+    .hero {
+      --art-width: 110vw;
+      --art-top: 56px;
+    }
+
     .copy {
-      grid-template-columns: minmax(0, 1fr);
+      min-height: 0;
+      margin-left: 14px;
+      padding-top: calc(var(--art-top) + var(--art-height) * 0.95);
+    }
+
+    h1 {
+      font-size: 13.6vw;
     }
   }
 </style>

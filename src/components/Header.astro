@@ -21,12 +21,16 @@ import Seal from "./Seal.astro";
 
 <style>
   .top {
+    position: absolute;
+    z-index: 4;
+    inset: 0 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 32px;
     padding-top: 22px;
     padding-bottom: 22px;
+    color: var(--on-sumi);
   }
 
   .brand {
@@ -50,7 +54,7 @@ import Seal from "./Seal.astro";
   .github {
     display: block;
     height: 24px;
-    color: var(--sumi);
+    color: var(--on-sumi);
   }
 
   .github:hover {
@@ -59,16 +63,16 @@ import Seal from "./Seal.astro";
 
   .download {
     padding: 4px 12px;
-    border: 1px solid var(--sumi);
+    border: 1px solid var(--on-sumi);
     border-radius: 5px;
-    background: var(--sumi);
-    color: var(--on-sumi);
+    background: var(--on-sumi);
+    color: var(--sumi);
     font: 500 0.78rem/1.5 var(--mono);
     text-decoration: none;
   }
 
   .download:hover {
     background: none;
-    color: var(--sumi);
+    color: var(--on-sumi);
   }
 </style>
