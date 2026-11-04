@@ -12,7 +12,7 @@
   border-radius: 10px;
   background: var(--app-bg);
   color: var(--app-text);
-  font: 400 0.78rem/1.5 var(--mono);
+  font: 400 0.8rem/1.65 var(--mono);
 }
 
 .paper {
@@ -44,13 +44,13 @@
 .hero .body {
   display: grid;
   grid-template-columns: 200px minmax(0, 1fr) 300px;
-  height: clamp(600px, 78svh, 820px);
+  height: clamp(660px, 84svh, 900px);
 }
 
 .review .body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 380px;
-  height: clamp(420px, 56svh, 540px);
+  height: clamp(480px, 62svh, 620px);
 }
 
 .splits,
@@ -60,11 +60,11 @@
 }
 
 .splits {
-  height: clamp(500px, 66svh, 660px);
+  height: clamp(560px, 74svh, 760px);
 }
 
 .install {
-  height: 300px;
+  height: 320px;
 }
 
 .splits .body,
