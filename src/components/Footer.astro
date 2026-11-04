@@ -1,0 +1,39 @@
+---
+import Seal from "./Seal.astro";
+---
+
+<footer>
+  <div class="wrap row">
+    <Seal light />
+    <p>
+      <span lang="ja">縁</span> (en): the bond that ties people and things together.
+    </p>
+    <p class="credit">Agent names belong to their owners.</p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    padding: 28px 0;
+    background: var(--sumi);
+    color: var(--on-sumi-muted);
+    font-size: 0.9rem;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 18px;
+  }
+
+  .credit {
+    margin-left: auto;
+  }
+
+  @media (max-width: 760px) {
+    .credit {
+      margin-left: 0;
+    }
+  }
+</style>

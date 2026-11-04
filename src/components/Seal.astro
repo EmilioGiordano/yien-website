@@ -1,0 +1,30 @@
+---
+interface Props {
+  light?: boolean;
+}
+
+const { light = false } = Astro.props;
+---
+
+<span class:list={["seal", { light }]} aria-hidden="true">
+  縁
+</span>
+
+<style>
+  .seal {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 3px;
+    background: var(--shu);
+    color: var(--paper);
+    font: 800 1.3rem/1 var(--mincho);
+    filter: url(#ink);
+  }
+
+  .light {
+    background: var(--paper);
+    color: var(--sumi);
+  }
+</style>

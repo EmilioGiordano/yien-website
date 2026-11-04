@@ -1,0 +1,36 @@
+---
+import AgentsSection from "../components/AgentsSection.astro";
+import DownloadSection from "../components/DownloadSection.astro";
+import Footer from "../components/Footer.astro";
+import GitSection from "../components/GitSection.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import TabsSection from "../components/TabsSection.astro";
+import TerminalsSection from "../components/TerminalsSection.astro";
+import Thread from "../components/Thread.astro";
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  title="YIEN: many agents, one thread"
+  description="YIEN is a workspace that runs your coding agents side by side in real terminals, with Git and your code in the same window."
+>
+  <Header />
+  <main id="top">
+    <Thread />
+    <Hero />
+    <TabsSection />
+    <TerminalsSection />
+    <GitSection />
+    <AgentsSection />
+    <DownloadSection />
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  main {
+    position: relative;
+    display: block;
+  }
+</style>

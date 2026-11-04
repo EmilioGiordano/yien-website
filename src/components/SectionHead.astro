@@ -1,0 +1,34 @@
+---
+interface Props {
+  sectionId: string;
+  title: string;
+  text: string;
+}
+
+const { sectionId, title, text } = Astro.props;
+---
+
+<div class="head">
+  <h2 id={`${sectionId}-title`}>{title}</h2>
+  <p>{text}</p>
+</div>
+
+<style>
+  .head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 1fr);
+    gap: 20px clamp(24px, 5vw, 72px);
+    align-items: end;
+    margin-bottom: clamp(32px, 4vw, 52px);
+  }
+
+  p {
+    color: var(--section-text-muted, inherit);
+  }
+
+  @media (max-width: 760px) {
+    .head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

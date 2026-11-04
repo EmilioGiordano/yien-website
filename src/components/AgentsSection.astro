@@ -1,0 +1,77 @@
+---
+import Section from "./Section.astro";
+import SectionHead from "./SectionHead.astro";
+
+const agents = [
+  { name: "Claude Code", command: "claude" },
+  { name: "Codex", command: "codex" },
+  { name: "Antigravity", command: "agy" },
+  { name: "OpenCode", command: "opencode" },
+  { name: "Aider", command: "aider" },
+  { name: "Whatever you use next", command: "your-tool" },
+];
+---
+
+<Section id="agents" dark>
+  <div class="wrap indent">
+    <SectionHead
+      sectionId="agents"
+      title="Bring the agents you already use."
+      text="YIEN isn't another agent. It runs the command-line tools you already have, with your own accounts, in real terminals. If it runs in a shell, it runs here."
+    />
+  </div>
+  <div class="wrap">
+    <ul class="branches">
+      {agents.map(({ name, command }) => (
+        <li>
+          <b>{name}</b>
+          <code>{command}</code>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Section>
+
+<style>
+  .branches {
+    position: relative;
+    padding-top: 4px;
+  }
+
+  li {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-left: var(--indent);
+    padding: 16px 0;
+    border-bottom: 1px solid var(--sumi-line);
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    bottom: 50%;
+    left: calc(var(--indent) * -1);
+    width: calc(var(--indent) - 12px);
+    height: 44px;
+    margin-bottom: -1px;
+    border-bottom: 2px solid var(--thread);
+    border-left: 2px solid var(--thread);
+    border-bottom-left-radius: 14px;
+  }
+
+  b {
+    font: 700 clamp(1.5rem, 3.4vw, 2.6rem) / 1.2 var(--mincho);
+  }
+
+  code {
+    color: var(--on-sumi-muted);
+    font-size: 0.9rem;
+  }
+
+  li:last-child b {
+    color: var(--on-sumi-muted);
+  }
+</style>

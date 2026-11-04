@@ -1,0 +1,78 @@
+---
+import { HeroApp } from "../app/islands/HeroApp";
+---
+
+<section class="hero">
+  <div class="wrap">
+    <div class="copy">
+      <h1>
+        Many agents.
+        <br />
+        One thread.
+      </h1>
+      <div>
+        <p class="lead">
+          YIEN is a workspace for your coding agents. Run them in real terminals, split however you
+          like, and review every branch from the same window. You only hear from them when one needs
+          you.
+        </p>
+        <p class="actions">
+          <a class="btn" href="#download">
+            Get YIEN
+          </a>
+          <a class="link" href="#tabs">
+            See how it works
+          </a>
+        </p>
+      </div>
+    </div>
+    <div data-thread-start>
+      <HeroApp client:load />
+    </div>
+    <noscript>
+      <p class="note">
+        This window needs JavaScript. It shows agents working in tabs and terminals.
+      </p>
+    </noscript>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding: clamp(28px, 5vw, 64px) 0 0;
+  }
+
+  .copy {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
+    gap: 24px clamp(24px, 5vw, 72px);
+    align-items: end;
+    margin-bottom: clamp(32px, 5vw, 56px);
+  }
+
+  h1 {
+    font-size: clamp(3.1rem, 7.4vw, 6.6rem);
+    line-height: 1;
+  }
+
+  .lead {
+    margin-bottom: 22px;
+  }
+
+  .link {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+
+  .note {
+    padding: 24px 0;
+    color: var(--pencil);
+  }
+
+  @media (max-width: 760px) {
+    .copy {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

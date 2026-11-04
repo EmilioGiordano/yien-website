@@ -1,0 +1,22 @@
+:root {
+  --paper: #f7f6f0;
+  --graphite: #23211e;
+  --pencil: #77746d;
+  --line: #d6d4ca;
+  --shu: #b3121b;
+  --shu-bright: #e8333c;
+  --thread: #d11f28;
+  --sumi: #0d0c0b;
+  --on-sumi: #e9e6dd;
+  --on-sumi-muted: #a19d93;
+  --sumi-line: #2e2b27;
+
+  --mincho: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  --gothic: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --mono: "M PLUS 1 Code", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --wrap: 1320px;
+  --pad: clamp(16px, 4vw, 48px);
+  --indent: clamp(20px, 5vw, 72px);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.18 0 0 0 0 0.15 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}

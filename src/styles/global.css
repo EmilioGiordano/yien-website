@@ -1,0 +1,105 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--paper) var(--grain);
+  color: var(--graphite);
+  font: 400 1.0625rem/1.75 var(--gothic);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-family: var(--mincho);
+  font-weight: 800;
+  letter-spacing: -0.005em;
+}
+
+h2 {
+  font-size: clamp(2.3rem, 5vw, 4.2rem);
+  line-height: 1.08;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+kbd,
+code,
+pre {
+  font-family: var(--mono);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--thread);
+  outline-offset: 3px;
+}
+
+.wrap {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+}
+
+.indent {
+  padding-left: calc(var(--pad) + var(--indent));
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 11px 24px;
+  border: 1px solid var(--sumi);
+  border-radius: 3px;
+  background: var(--sumi);
+  color: var(--on-sumi);
+  font: 500 1rem/1.3 var(--gothic);
+  text-decoration: none;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.btn:hover {
+  background: var(--paper);
+  color: var(--sumi);
+}

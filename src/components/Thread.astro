@@ -1,0 +1,31 @@
+<span class="thread" aria-hidden="true" hidden></span>
+
+<style>
+  .thread {
+    position: absolute;
+    z-index: 3;
+    left: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad)));
+    width: 2px;
+    background: var(--thread);
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  /* Runs from the bottom of the hero window to the hook on the closing title. */
+  const thread = document.querySelector<HTMLElement>(".thread")!;
+  const container = thread.parentElement!;
+  const start = document.querySelector("[data-thread-start]")!;
+  const end = document.querySelector("[data-thread-end]")!;
+
+  const place = () => {
+    const base = container.getBoundingClientRect().top;
+    const top = start.getBoundingClientRect().bottom - base;
+    thread.style.top = `${top}px`;
+    thread.style.height = `${end.getBoundingClientRect().top - base - top}px`;
+  };
+
+  new ResizeObserver(place).observe(container);
+  place();
+  thread.hidden = false;
+</script>

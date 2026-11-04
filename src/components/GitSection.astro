@@ -1,0 +1,16 @@
+---
+import { GitDemo } from "../app/islands/GitDemo";
+import Section from "./Section.astro";
+import SectionHead from "./SectionHead.astro";
+---
+
+<Section id="changes">
+  <div class="wrap indent">
+    <SectionHead
+      sectionId="changes"
+      title="See what they change as they change it."
+      text="The panel on the right follows the terminal you're in. Everything Git lives there, one click from the code, and whatever you open lands in a tab next to your terminals."
+    />
+    <GitDemo client:visible />
+  </div>
+</Section>

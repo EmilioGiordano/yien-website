@@ -1,0 +1,30 @@
+---
+interface Props {
+  id: string;
+  dark?: boolean;
+}
+
+const { id, dark = false } = Astro.props;
+---
+
+<section class:list={["section", { dark }]} id={id} aria-labelledby={`${id}-title`}>
+  <slot />
+</section>
+
+<style>
+  .section {
+    position: relative;
+    padding: clamp(72px, 10vw, 136px) 0;
+  }
+
+  .section > :global(.wrap) {
+    position: relative;
+    z-index: 2;
+  }
+
+  .dark {
+    --section-text-muted: var(--on-sumi-muted);
+    background: var(--sumi);
+    color: var(--on-sumi);
+  }
+</style>

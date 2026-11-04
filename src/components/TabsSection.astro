@@ -1,0 +1,189 @@
+---
+import Section from "./Section.astro";
+
+const tabs = [
+  { name: "checkout-rewrite", work: "Refactoring" },
+  { name: "auth-migration", work: "Migrating tokens" },
+  { name: "docs-quickstart", work: "Rewriting the docs" },
+  { name: "flaky-tests", work: "Running tests" },
+  { name: "release-notes", work: "Writing notes" },
+];
+---
+
+<Section id="tabs">
+  <div class="wrap columns">
+    <div class="tabs" data-tabs-demo aria-hidden="true">
+      {tabs.map(({ name, work }) => (
+        <div class="tab" data-work={work}>
+          <span class="glyph" />
+          <b>{name}</b>
+          <span class="status" />
+        </div>
+      ))}
+    </div>
+    <div>
+      <h2 id="tabs-title">Stop checking on them.</h2>
+      <p>
+        A tab is one piece of work: its terminals, its branch, its files. The sidebar tells you how
+        each one is going, so you can get on with your own.
+      </p>
+      <dl class="states">
+        <div>
+          <dt>Working</dt>
+          <dd>Leave it alone.</dd>
+        </div>
+        <div>
+          <dt>Done</dt>
+          <dd>Read it when you're ready.</dd>
+        </div>
+        <div>
+          <dt class="needs-you">Needs you</dt>
+          <dd>
+            An agent is waiting for your answer. It's the only red in the app, so you can't miss it.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 40px clamp(32px, 6vw, 96px);
+    align-items: center;
+    padding-left: calc(var(--pad) + var(--indent));
+  }
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  .states {
+    display: grid;
+    gap: 14px;
+    margin: 28px 0 0;
+  }
+
+  .states div {
+    display: grid;
+    grid-template-columns: 7em minmax(0, 1fr);
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  dt {
+    font-weight: 700;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--pencil);
+  }
+
+  .needs-you {
+    color: var(--shu);
+  }
+
+  .tabs {
+    border-top: 1px solid var(--graphite);
+    font-family: var(--mono);
+  }
+
+  .tab {
+    position: relative;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: baseline;
+    padding: 18px 8px 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tab b {
+    font: 700 clamp(1.15rem, 2.1vw, 1.6rem) / 1.3 var(--mincho);
+    overflow-wrap: anywhere;
+  }
+
+  .glyph {
+    color: var(--pencil);
+  }
+
+  .status {
+    padding-left: 12px;
+    color: var(--pencil);
+    font-size: 0.84rem;
+    white-space: nowrap;
+  }
+
+  .tab[data-state="done"] b {
+    color: var(--pencil);
+  }
+
+  .tab[data-state="asking"] .glyph,
+  .tab[data-state="asking"] .status,
+  .tab[data-state="asking"] b {
+    color: var(--shu);
+  }
+
+  .tab[data-state="asking"]::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    width: var(--indent);
+    border-top: 2px solid var(--thread);
+  }
+
+  @media (max-width: 760px) {
+    .columns {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .states div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2px;
+    }
+  }
+</style>
+
+<script>
+  import { spin } from "../app/spinnerFrames";
+
+  const BEAT_MS = 3000;
+  const demo = document.querySelector<HTMLElement>("[data-tabs-demo]")!;
+  const rows = [...demo.children] as HTMLElement[];
+  const stops = new Map<HTMLElement, () => void>();
+  let beat = 0;
+
+  const showBeat = () => {
+    rows.forEach((row, index) => {
+      const age = (beat - index + rows.length) % rows.length;
+      const state = age === 0 ? "asking" : age < 3 ? "working" : "done";
+      const glyph = row.querySelector<HTMLElement>(".glyph")!;
+      row.dataset.state = state;
+      row.querySelector(".status")!.textContent =
+        state === "asking" ? "Needs you" : state === "done" ? "Done" : row.dataset.work!;
+
+      stops.get(row)?.();
+      stops.delete(row);
+      if (state === "working") stops.set(row, spin(glyph));
+      else glyph.textContent = state === "asking" ? "■" : "✓";
+    });
+  };
+
+  showBeat();
+
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    let visible = false;
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    }).observe(demo);
+    setInterval(() => {
+      if (!visible || document.hidden) return;
+      beat = (beat + 1) % rows.length;
+      showBeat();
+    }, BEAT_MS);
+  }
+</script>

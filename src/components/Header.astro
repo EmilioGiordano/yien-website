@@ -1,0 +1,78 @@
+---
+import Seal from "./Seal.astro";
+
+const links = [
+  { href: "#tabs", label: "Tabs" },
+  { href: "#terminals", label: "Terminals" },
+  { href: "#changes", label: "Files and git" },
+  { href: "#agents", label: "Agents" },
+];
+---
+
+<header class="top wrap">
+  <a class="brand" href="#top" aria-label="YIEN, home">
+    <Seal />
+    <span class="wordmark">YIEN</span>
+  </a>
+  <nav class="nav" aria-label="Sections">
+    {links.map(({ href, label }) => (
+      <a href={href}>{label}</a>
+    ))}
+  </nav>
+  <a class="btn small" href="#download">
+    Get YIEN
+  </a>
+</header>
+
+<style>
+  .top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .wordmark {
+    font: 800 1.3rem/1 var(--mincho);
+    letter-spacing: 0.14em;
+  }
+
+  .nav {
+    display: flex;
+    gap: 26px;
+    margin-left: auto;
+    font-size: 0.95rem;
+  }
+
+  .nav a {
+    color: var(--pencil);
+    text-decoration: none;
+  }
+
+  .nav a:hover {
+    color: var(--graphite);
+  }
+
+  .small {
+    padding: 7px 16px;
+    font-size: 0.92rem;
+  }
+
+  @media (max-width: 760px) {
+    .nav {
+      display: none;
+    }
+
+    .small {
+      margin-left: auto;
+    }
+  }
+</style>

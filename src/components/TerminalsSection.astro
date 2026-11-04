@@ -1,0 +1,16 @@
+---
+import { SplitsDemo } from "../app/islands/SplitsDemo";
+import Section from "./Section.astro";
+import SectionHead from "./SectionHead.astro";
+---
+
+<Section id="terminals" dark>
+  <div class="wrap indent">
+    <SectionHead
+      sectionId="terminals"
+      title="One terminal, or four."
+      text="A small fix gets one agent. A rewrite gets four. They're real terminals, so type to any agent, or open a shell right next to it. Whatever you can't see keeps running."
+    />
+    <SplitsDemo client:visible />
+  </div>
+</Section>
