@@ -101,6 +101,10 @@
   color: var(--app-code-type);
 }
 
+.text:focus-visible {
+  outline: none;
+}
+
 .text {
   position: relative;
   display: block;

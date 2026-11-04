@@ -117,6 +117,10 @@
   font: inherit;
 }
 
+.field:focus-visible {
+  outline: none;
+}
+
 .field::placeholder {
   color: var(--app-faint);
 }
