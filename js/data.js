@@ -245,6 +245,29 @@ window.YIEN_DATA = {
     },
   ],
 
+  closing: [
+    {
+      name: "install",
+      layout: 1,
+      hold: 12000,
+      files: [],
+      commits: [],
+      agents: [
+        {
+          cli: "claude",
+          task: "Install YIEN",
+          script: [
+            { t: "prompt", text: "Install YIEN on this machine." },
+            { t: "tool", name: "Bash", arg: "npm install -g yien", res: "404 not found", ms: 1240 },
+            { t: "tool", name: "Bash", arg: "brew install yien", res: "no such formula", ms: 860 },
+            { t: "think", text: "Nobody publishes it, and there is no repo either." },
+            { t: "msg", text: "I can't install it. YIEN is a concept, so there's no app yet. Everything you saw up there was a simulation." },
+          ],
+        },
+      ],
+    },
+  ],
+
   splits: [
     {
       name: "search-rebuild",

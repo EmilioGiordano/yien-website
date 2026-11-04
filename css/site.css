@@ -425,25 +425,31 @@ main { position: relative; display: block; }
 .branches li:last-child b { color: var(--on-sumi-muted); }
 
 /* ---------- Closing ---------- */
-.closing { background: var(--shu); color: var(--paper); padding: clamp(72px, 10vw, 136px) 0; }
+.closing { padding: clamp(72px, 10vw, 136px) 0; }
 .closing-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
-  gap: 32px clamp(24px, 6vw, 96px);
-  align-items: end;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 1fr);
+  gap: 40px clamp(24px, 6vw, 96px);
+  align-items: center;
 }
-.closing h2 { font-size: clamp(2.8rem, 7.4vw, 6.4rem); line-height: 1; margin-bottom: 24px; }
-.closing-grid > div:first-child p { max-width: 56ch; }
-.last-ask { padding: 18px 20px; border: 1px solid var(--paper); }
-.last-q { font-weight: 700; }
-.last-ask code { display: block; margin: 2px 0 14px; font-size: .86rem; }
-.last-actions { display: flex; gap: 10px; }
-.btn-ink { background: var(--paper); border-color: var(--paper); color: var(--sumi); }
-.btn-ink:hover { background: var(--sumi); border-color: var(--sumi); color: var(--paper); }
-.btn-line { background: none; border-color: var(--paper); color: var(--paper); }
-.btn-line:hover { background: var(--paper); color: var(--sumi); }
-.closing :focus-visible { outline-color: var(--paper); }
-.last-reply { font-size: 1rem; }
+.closing h2 { position: relative; font-size: clamp(2.6rem, 6vw, 5.2rem); line-height: 1.02; margin-bottom: 24px; color: var(--shu); }
+.closing-grid > div:first-child p { max-width: 52ch; }
+.closing .actions { margin-top: 24px; }
+/* the page's thread ends here, curving into the title */
+.closing-hook {
+  position: absolute;
+  top: .52em;
+  left: calc(var(--indent) * -1);
+  width: calc(var(--indent) - 12px);
+  height: 44px;
+  transform: translateY(-100%);
+  border-left: 2px solid var(--thread);
+  border-bottom: 2px solid var(--thread);
+  border-bottom-left-radius: 14px;
+}
+.btn-red { background: var(--shu); border-color: var(--shu); color: var(--paper); }
+.btn-red:hover { background: var(--sumi); border-color: var(--sumi); color: var(--on-sumi); }
+.app.closing-app { height: 320px; }
 
 /* ---------- Footer ---------- */
 .foot { background: var(--sumi); color: var(--on-sumi-muted); padding: 28px 0; font-size: .9rem; }

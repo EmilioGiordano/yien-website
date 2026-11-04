@@ -5,6 +5,8 @@
   /* ---------- The windows ---------- */
   new YienSim(document.querySelector("#hero-app"), data.hero, { driver: true });
 
+  new YienSim(document.querySelector("#closing-app"), data.closing, { chrome: false });
+
   const splitsRoot = document.querySelector("#splits-app");
   const splits = new YienSim(splitsRoot, data.splits, { chrome: false });
   const layoutButtons = [...document.querySelectorAll("[data-set-layout]")];
@@ -64,7 +66,7 @@
   const main = document.querySelector("main");
   const thread = document.querySelector(".thread");
   const start = document.querySelector("#hero-app");
-  const end = document.querySelector(".closing");
+  const end = document.querySelector(".closing-hook");
   const place = () => {
     const base = main.getBoundingClientRect().top;
     const top = start.getBoundingClientRect().bottom - base;
@@ -74,18 +76,4 @@
   new ResizeObserver(place).observe(main);
   place();
 
-  /* ---------- The last question ---------- */
-  const reply = document.querySelector("#concept-reply");
-  const asks = document.querySelector("#concept-actions");
-  const answers = {
-    yes: "Noted. It still doesn't exist, but now it has a fan.",
-    no: "Fair. It'll stay right here, not existing.",
-  };
-  asks.addEventListener("click", (event) => {
-    const button = event.target.closest("button");
-    if (!button) return;
-    asks.hidden = true;
-    reply.textContent = answers[button.dataset.answer];
-    reply.hidden = false;
-  });
 })();
