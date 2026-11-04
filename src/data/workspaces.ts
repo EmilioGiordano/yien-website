@@ -715,26 +715,3 @@ export const splitsWorkspaces: WorkspaceSpec[] = [
     ],
   },
 ];
-
-export const installWorkspaces: WorkspaceSpec[] = [
-  {
-    name: "install",
-    layout: 1,
-    files: ["README.md", "package.json"],
-    commits: [],
-    terminals: [
-      {
-        kind: "shell",
-        pinned: true,
-        command: "brew install --cask yien",
-        output: [
-          "==> Downloading yien-1.4.0-arm64.dmg",
-          "==> Installing Cask yien",
-          "yien was successfully installed!",
-          " ",
-          "Open a project with: yien ~/shop",
-        ],
-      },
-    ],
-  },
-];

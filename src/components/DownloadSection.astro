@@ -1,194 +1,53 @@
 ---
-import { InstallTerminal } from "../app/islands/InstallTerminal";
-
-const platforms = [
-  { os: "macOS", command: "brew install --cask yien" },
-  { os: "Windows", command: "winget install yien" },
-  { os: "Linux", command: "flatpak install yien" },
-];
-const [first] = platforms;
+import { DownloadPanel } from "../app/islands/DownloadPanel";
 ---
 
 <section class="closing" id="download" aria-labelledby="download-title">
-  <div class="wrap indent grid">
-    <div class="copy">
-      <h2 id="download-title">
-        <span class="hook" aria-hidden="true" data-thread-end></span>Put your agents to work.
-      </h2>
-      <p>
-        YIEN is free for personal use and runs on your own machine. Your code, your agents and your
-        accounts stay where they are.
-      </p>
-      <p class="actions download">
-        <a class="btn red" href="#download" data-download>
-          Download for {first.os}
-        </a>
-      </p>
-      <div class="install">
-        <div class="platforms" role="group" aria-label="Choose a platform">
-          {platforms.map(({ os, command }) => (
-            <button
-              type="button"
-              data-os={os}
-              data-command={command}
-              aria-pressed={os === first.os}
-            >
-              {os}
-            </button>
-          ))}
-        </div>
-        <p class="line">
-          <code data-command-text>{first.command}</code>
-          <button type="button" data-copy>
-            Copy
-          </button>
-        </p>
-      </div>
-    </div>
-    <InstallTerminal client:visible />
+  <span class="kanji" lang="ja" aria-hidden="true">
+    縁
+  </span>
+  <div class="wrap indent">
+    <h2 id="download-title">Put your agents to work.</h2>
+    <p>
+      YIEN is free for personal use and runs on your own machine. Your code, your agents and your
+      accounts stay where they are.
+    </p>
+    <DownloadPanel client:visible />
   </div>
 </section>
 
 <style>
   .closing {
-    padding: clamp(72px, 10vw, 136px) 0;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 1fr);
-    gap: 40px clamp(24px, 6vw, 96px);
-    align-items: center;
-  }
-
-  h2 {
     position: relative;
-    margin-bottom: 24px;
-    color: var(--shu);
-    font-size: clamp(2.6rem, 6vw, 5.2rem);
-    line-height: 1.02;
-  }
-
-  .copy p {
-    max-width: 52ch;
-  }
-
-  .hook {
-    position: absolute;
-    top: 0.52em;
-    left: calc(var(--indent) * -1);
-    width: calc(var(--indent) - 12px);
-    height: 44px;
-    transform: translateY(-100%);
-    border-bottom: 2px solid var(--thread);
-    border-left: 2px solid var(--thread);
-    border-bottom-left-radius: 14px;
-  }
-
-  .download {
-    margin-top: 24px;
-  }
-
-  .red {
-    border-color: var(--shu);
-    background: var(--shu);
-    color: var(--paper);
-  }
-
-  .red:hover {
-    border-color: var(--sumi);
+    padding: clamp(88px, 12vw, 168px) 0 clamp(72px, 9vw, 128px);
+    overflow: hidden;
     background: var(--sumi);
     color: var(--on-sumi);
   }
 
-  .install {
+  .kanji {
+    position: absolute;
+    top: -0.14em;
+    right: -0.04em;
+    color: color-mix(in srgb, var(--on-sumi) 6%, var(--sumi));
+    font: 800 min(64vw, 860px) / 1 var(--mincho);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .wrap {
+    position: relative;
+  }
+
+  h2 {
+    max-width: 12ch;
+    font-size: clamp(3rem, 8.4vw, 7.6rem);
+    line-height: 1;
+  }
+
+  p {
+    max-width: 52ch;
     margin-top: 28px;
-  }
-
-  .platforms {
-    display: flex;
-    gap: 18px;
-    font-size: 0.92rem;
-  }
-
-  .platforms button {
-    padding: 0 0 4px;
-    border: 0;
-    border-bottom: 2px solid transparent;
-    background: none;
-    color: var(--pencil);
-  }
-
-  .platforms button:hover {
-    color: var(--graphite);
-  }
-
-  .platforms [aria-pressed="true"] {
-    border-bottom-color: var(--graphite);
-    color: var(--graphite);
-  }
-
-  .line {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 8px;
-    padding: 8px 8px 8px 14px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-  }
-
-  .line code {
-    font-size: 0.88rem;
-    overflow-wrap: anywhere;
-  }
-
-  .line button {
-    flex: none;
-    padding: 3px 10px;
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    background: none;
-    font-size: 0.86rem;
-  }
-
-  .line button:hover {
-    border-color: var(--graphite);
-  }
-
-  @media (max-width: 760px) {
-    .grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
+    color: var(--on-sumi-muted);
   }
 </style>
-
-<script>
-  const buttons = [...document.querySelectorAll<HTMLButtonElement>("[data-os]")];
-  const download = document.querySelector("[data-download]")!;
-  const command = document.querySelector("[data-command-text]")!;
-  const copy = document.querySelector("[data-copy]")!;
-
-  const selectPlatform = (selected: HTMLButtonElement) => {
-    command.textContent = selected.dataset.command!;
-    download.textContent = `Download for ${selected.dataset.os}`;
-    copy.textContent = "Copy";
-    buttons.forEach((button) => button.setAttribute("aria-pressed", String(button === selected)));
-  };
-
-  buttons.forEach((button) => button.addEventListener("click", () => selectPlatform(button)));
-
-  copy.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(command.textContent!);
-      copy.textContent = "Copied";
-    } catch {
-      copy.textContent = "Press Ctrl C";
-    }
-  });
-
-  const { platform } = navigator;
-  const detected = /Win/.test(platform) ? "Windows" : /Linux/.test(platform) ? "Linux" : "macOS";
-  selectPlatform(buttons.find((button) => button.dataset.os === detected)!);
-</script>
