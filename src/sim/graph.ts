@@ -30,19 +30,18 @@ export interface Graph {
 const shortName = (branch: string) => branch.split("/").pop() ?? branch;
 const rowY = (index: number) => index * GRAPH_ROW_HEIGHT + GRAPH_ROW_HEIGHT / 2;
 
-/* Waiting agents and uncommitted work on top, then every commit, with one lane per branch. */
+/* Uncommitted work on top, then every commit, with one lane per branch. */
 export function buildGraph(git: GitState): Graph {
   const rows: GraphRow[] = [];
   for (const agent of git.agents) {
-    const asking = agent.status === "asking";
     const count = git.changes[agent.branch]?.length ?? 0;
-    if (!asking && !count) continue;
+    if (!count) continue;
     rows.push({
       kind: "pending",
       branch: agent.branch,
       title: shortName(agent.branch),
-      text: asking ? "Waiting on you" : `${count} uncommitted ${count === 1 ? "file" : "files"}`,
-      asking,
+      text: `${count} uncommitted ${count === 1 ? "file" : "files"}`,
+      asking: agent.status === "asking",
     });
   }
   for (const commit of git.commits) {

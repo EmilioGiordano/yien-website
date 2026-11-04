@@ -77,7 +77,6 @@
   color: var(--app-dim);
 }
 
-.rowWaiting b,
-.rowWaiting .text {
+.rowWaiting .head b {
   color: var(--app-red);
 }
