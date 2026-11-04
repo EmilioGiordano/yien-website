@@ -33,6 +33,13 @@ h2 {
   line-height: 1.08;
 }
 
+/* Tight lines make selection boxes overlap, so a selected title only changes color. */
+h1::selection,
+h2::selection {
+  background: transparent;
+  color: var(--thread);
+}
+
 p {
   margin: 0;
 }
