@@ -30,4 +30,14 @@ describe("Simulation", () => {
     const { commits } = sim.getState().workspaces[0].git;
     expect(commits.filter((commit) => commit.hash === "abc1234")).toHaveLength(1);
   });
+
+  it("splits into as many terminals as you ask for", () => {
+    const sim = new Simulation([spec], { still: true });
+    const wsId = sim.getState().workspaces[0].id;
+    for (let split = 0; split < 11; split++) sim.splitTerminal(wsId);
+
+    const ws = sim.getState().workspaces[0];
+    expect(ws.terminals).toHaveLength(12);
+    expect(ws.layout).toBe(12);
+  });
 });

@@ -9,6 +9,7 @@ const LAYOUTS = [
   { count: 2, label: "Two terminals", icon: styles.grid2 },
   { count: 3, label: "Three terminals", icon: styles.grid3 },
   { count: 4, label: "Four terminals", icon: styles.grid4 },
+  { count: 6, label: "Six terminals", icon: styles.grid6 },
 ];
 const CYCLE_MS = 5200;
 
@@ -25,8 +26,8 @@ export function SplitsDemo() {
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const narrow = matchMedia("(max-width: 760px)").matches;
-    const order = narrow ? [1, 2] : [1, 2, 3, 4];
-    let index = order.length - 1;
+    const order = narrow ? [1, 2] : LAYOUTS.map(({ count }) => count);
+    let index = narrow ? 1 : order.indexOf(4);
     if (narrow) setLayout(2);
     let running = true;
     void (async () => {
@@ -73,7 +74,7 @@ export function SplitsDemo() {
       <AppWindow
         sim={sim}
         variant="splits"
-        label="Four agents working in split terminals. The buttons above change how many are shown."
+        label="Agents working in split terminals. The buttons above change how many are shown."
       />
     </>
   );

@@ -58,6 +58,10 @@
   grid-template: 1fr 1fr / 1fr 1fr;
 }
 
+.grid6 {
+  grid-template: 1fr 1fr / 1fr 1fr 1fr;
+}
+
 .keys {
   color: var(--on-sumi-muted);
   font-size: 0.88rem;
@@ -75,6 +79,7 @@
 @media (max-width: 760px) {
   .picker button[data-count="3"],
   .picker button[data-count="4"],
+  .picker button[data-count="6"],
   .keys {
     display: none;
   }

@@ -21,7 +21,6 @@ import {
 } from "./types";
 
 export const PANEL_VIEWS: PanelView[] = ["files", "changes", "graph", "branches"];
-const MAX_TERMINALS = 4;
 const MAX_WORKSPACES = 8;
 const DEFAULT_BASE_COMMIT = { hash: "f0c1e2a", message: "Release 2.3" };
 
@@ -267,8 +266,6 @@ export class Simulation {
   };
 
   splitTerminal = (wsId: string) => {
-    const ws = this.workspace(wsId);
-    if (ws.terminals.length >= MAX_TERMINALS) return;
     const shell = this.createTerminal(wsId, this.specs.get(wsId)!, {
       kind: "shell",
     }) as ShellTerminal;

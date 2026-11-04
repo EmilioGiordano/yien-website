@@ -14,6 +14,7 @@ interface PaneProps<T extends Terminal> {
   terminal: T;
   focused: boolean;
   splittable: boolean;
+  hidden: boolean;
 }
 
 function DraftInput({
@@ -85,10 +86,11 @@ function AgentStatusLine({ terminal }: { terminal: AgentTerminal }) {
 }
 
 export const AgentPane = memo(
-  ({ sim, wsId, terminal, focused, splittable }: PaneProps<AgentTerminal>) => {
+  ({ sim, wsId, terminal, focused, splittable, hidden }: PaneProps<AgentTerminal>) => {
     const asking = terminal.status === "asking";
     return (
       <section
+        hidden={hidden}
         class={`${styles.pane} ${focused ? styles.focused : ""} ${asking ? styles.asking : ""}`}
         onPointerDown={() => sim.focusTerminal(wsId, terminal.id)}
       >
@@ -122,7 +124,7 @@ export const AgentPane = memo(
 );
 
 export const ShellPane = memo(
-  ({ sim, wsId, terminal, focused, splittable }: PaneProps<ShellTerminal>) => {
+  ({ sim, wsId, terminal, focused, splittable, hidden }: PaneProps<ShellTerminal>) => {
     const pane = useRef<HTMLElement>(null);
     const focusInput = (event: MouseEvent) => {
       if ((event.target as Element).closest("button") || getSelection()?.toString()) return;
@@ -132,6 +134,7 @@ export const ShellPane = memo(
     return (
       <section
         ref={pane}
+        hidden={hidden}
         class={`${styles.pane} ${focused ? styles.focused : ""}`}
         onPointerDown={() => sim.focusTerminal(wsId, terminal.id)}
         onClick={focusInput}
