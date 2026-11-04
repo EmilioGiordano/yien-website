@@ -425,13 +425,15 @@
   }
 
   class Sim {
-    /* options.chrome: draw the tabs and right panel. options.driver: act out the demo
+    /* options.chrome: draw the center tabs and right panel. options.side: and the tabs on the left.
+       options.still: skip straight to where the script stops. options.driver: act out the demo
        (open a tab that needs you, allow it) until someone clicks or types. */
     constructor(root, workspaces, options = {}) {
       this.root = root;
       this.chrome = options.chrome !== false;
+      this.side = options.side !== false;
       this.driver = options.driver && !REDUCED;
-      this.clock = new Clock(REDUCED);
+      this.clock = new Clock(REDUCED || options.still);
       this.view = options.view || "files";
       this.touched = false;
       this.queue = Promise.resolve();
@@ -487,15 +489,18 @@
     }
 
     buildChrome() {
-      const side = el("div", "side");
-      side.append(el("p", "side-label", "Tabs"));
-      this.tabList = el("div", "side-tabs");
-      this.workspaces.forEach((ws) => this.addRow(ws));
-      const add = el("button", "side-new");
-      add.type = "button";
-      add.append(el("span", null, "New tab"), el("kbd", null, "Ctrl T"));
-      add.addEventListener("click", () => this.newTab());
-      side.append(this.tabList, add);
+      let side = null;
+      if (this.side) {
+        side = el("div", "side");
+        side.append(el("p", "side-label", "Tabs"));
+        this.tabList = el("div", "side-tabs");
+        this.workspaces.forEach((ws) => this.addRow(ws));
+        const add = el("button", "side-new");
+        add.type = "button";
+        add.append(el("span", null, "New tab"), el("kbd", null, "Ctrl T"));
+        add.addEventListener("click", () => this.newTab());
+        side.append(this.tabList, add);
+      }
 
       const panel = el("div", "panel");
       this.branchButton = el("button", "panel-branch");
@@ -515,9 +520,13 @@
       panel.append(this.branchButton, toggle, this.panelBody);
 
       const body = el("div", "app-body");
-      body.append(side, this.stage, panel);
-      this.thread = el("span", "app-thread");
-      this.root.append(body, this.thread);
+      if (side) body.append(side);
+      body.append(this.stage, panel);
+      this.root.append(body);
+      if (side) {
+        this.thread = el("span", "app-thread");
+        this.root.append(this.thread);
+      }
     }
 
     addRow(ws) {
@@ -614,8 +623,8 @@
         ws.sub.textContent = a ? "Needs you" : w ? `${w} working` : idle ? "Shell" : "Done";
       }
       if (this.chrome) this.title.textContent = this.active.spec.name;
-      if (working || asking) this.count.replaceChildren(document.createTextNode(`${working} working`));
-      else this.count.replaceChildren();
+      this.count.replaceChildren();
+      if (working) this.count.append(`${working} working`);
       if (asking) this.count.append(el("b", null, `${asking} ${asking === 1 ? "needs" : "need"} you`));
 
       // the red thread runs down the window's edge, from the tab that needs you

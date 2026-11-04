@@ -463,23 +463,14 @@ main { position: relative; display: block; }
 .app-bare { display: flex; flex-direction: column; height: clamp(500px, 66svh, 660px); }
 .app-bare .stage { flex: 1; min-height: 0; border-radius: 0 0 9px 9px; overflow: hidden; }
 
-/* Files and git: a still of the review */
-.review {
-  display: grid;
-  grid-template-columns: 200px minmax(0, 1fr) 300px;
-}
-.review > * { min-width: 0; padding-bottom: 14px; }
-.review > * + * { border-left: 1px solid var(--a-line); }
-.pane-title { display: flex; justify-content: space-between; padding: 8px 14px; margin-bottom: 8px; border-bottom: 1px solid var(--a-line); background: var(--a-bar); color: var(--a-dim); }
-.pane-title span { color: var(--a-faint); }
-.review .diff { margin: 0; overflow: hidden; line-height: 1.7; font-size: .95em; white-space: normal; }
-.review .graph { display: grid; grid-template-columns: 56px minmax(0, 1fr); padding: 0 12px; color: var(--a-dim); }
-.review .graph svg { position: static; }
-.review .graph li { height: 35px; display: flex; flex-direction: column; justify-content: center; line-height: 1.3; }
-.review .graph li.is-gap { margin-top: 15px; }
-.review .graph b { font-weight: 500; color: var(--a-text); }
-.review .graph span { color: var(--a-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.review .graph .is-red b, .graph .is-red span { color: var(--a-red); }
+/* Files and git: how the panel is navigated */
+.git-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 28px; margin-bottom: 18px; }
+.git-nav button { display: grid; align-content: start; gap: 4px; padding: 12px 0 0; border: 0; border-top: 1px solid var(--line); background: none; text-align: left; color: var(--pencil); font-size: .92rem; line-height: 1.5; }
+.git-nav b { font: 700 1.3rem/1.2 var(--mincho); color: var(--pencil); }
+.git-nav button:hover b { color: var(--graphite); }
+.git-nav [aria-pressed="true"] { border-top: 2px solid var(--graphite); padding-top: 11px; color: var(--graphite); }
+.git-nav [aria-pressed="true"] b { color: var(--graphite); }
+.review-app .app-body { grid-template-columns: minmax(0, 1fr) 380px; height: clamp(460px, 62svh, 600px); }
 
 /* Agents: branches off the thread */
 .branches { position: relative; padding-top: 4px; }
@@ -545,8 +536,9 @@ main { position: relative; display: block; }
 @media (max-width: 1100px) {
   .app-body { grid-template-columns: 190px minmax(0, 1fr); }
   .panel { display: none; }
-  .review { grid-template-columns: 180px minmax(0, 1fr); }
-  .review-git { grid-column: 1 / -1; border-left: 0 !important; border-top: 1px solid var(--a-line); }
+  .review-app .panel { display: flex; }
+  .review-app .app-body { grid-template-columns: minmax(0, 1fr) 300px; }
+  .git-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 28px; }
 }
 @media (max-width: 760px) {
   .nav { display: none; }
@@ -567,8 +559,9 @@ main { position: relative; display: block; }
   .app-title { display: none; }
   .app-bare { height: 560px; }
   .layout-picker button[data-set-layout="3"], .layout-picker button[data-set-layout="4"], .keys { display: none; }
-  .review { grid-template-columns: minmax(0, 1fr); }
-  .review > * + * { border-left: 0; border-top: 1px solid var(--a-line); }
+  .review-app .app-body { height: auto; }
+  .review-app .stage { flex: none; height: 300px; border-bottom: 1px solid var(--a-line); }
+  .review-app .panel { height: 300px; border-left: 0; }
   .states div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .foot-row p:last-child { margin-left: 0; }
 }

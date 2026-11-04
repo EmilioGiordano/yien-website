@@ -36,6 +36,52 @@
     })();
   }
 
+  /* ---------- Git: the same window, stopped where an agent needs you ---------- */
+  const reviewRoot = document.querySelector("#review-app");
+  const review = new YienSim(reviewRoot, data.hero.slice(0, 1), { side: false, still: true, view: "graph", title: "checkout-rewrite" });
+  const gitButtons = [...document.querySelectorAll("[data-git]")];
+  const showGit = (view) => {
+    const ws = review.active;
+    const waiting = ws.agents.find((agent) => agent.state === "asking");
+    if (waiting) review.setBranch(ws, waiting.branch);
+    review.setView(view);
+    if (view === "graph") {
+      const commit = ws.commits.find((c) => c.branch !== "main");
+      if (commit) review.openCommit(ws, commit);
+    } else if (view === "changes") {
+      const file = waiting && [...waiting.changes.values()][0];
+      if (file) review.openDiff(ws, file);
+    } else if (view === "files") {
+      review.openFile(ws, "src/cart/coupon.ts");
+      document.activeElement.blur();
+    } else {
+      review.showSurface(ws, "terminals");
+    }
+    review.renderPanel(ws);
+    gitButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.git === view)));
+  };
+  let gitPicked = false;
+  gitButtons.forEach((button) =>
+    button.addEventListener("click", () => {
+      gitPicked = true;
+      showGit(button.dataset.git);
+    }),
+  );
+  reviewRoot.addEventListener("pointerdown", () => (gitPicked = true));
+  // the still window settles on the next tick, once the script has run
+  setTimeout(() => {
+    showGit("graph");
+    if (REDUCED) return;
+    let seen = false;
+    new IntersectionObserver(([entry]) => (seen = entry.isIntersecting)).observe(reviewRoot);
+    const timer = setInterval(() => {
+      if (gitPicked) return clearInterval(timer);
+      if (!seen || document.hidden) return;
+      const next = gitButtons[(gitButtons.findIndex((b) => b.getAttribute("aria-pressed") === "true") + 1) % gitButtons.length];
+      showGit(next.dataset.git);
+    }, 6000);
+  }, 50);
+
   /* ---------- The three states, one tab at a time ---------- */
   const rows = [...document.querySelectorAll("[data-tab-demo] .big-tab")];
   const work = ["Refactoring", "Migrating tokens", "Rewriting the docs", "Running tests", "Writing notes"];

@@ -96,66 +96,15 @@
       <div class="wrap indent">
         <div class="section-head">
           <h2 id="changes-title">See what they change as they change it.</h2>
-          <p>The right panel follows the tab. Files marks what's been touched, and git shows the diff. Every tab gets its own worktree, so two agents never trip over the same checkout.</p>
+          <p>The panel on the right follows the terminal you're in. Everything Git lives there, one click from the code, and whatever you open lands in a tab next to your terminals.</p>
         </div>
-        <div class="app is-paper review" role="img" aria-label="The YIEN file tree, a diff of coupon.ts, and a git history with one branch per tab.">
-          <div class="review-tree">
-            <p class="pane-title">Files</p>
-            <ul class="tree">
-              <li class="is-dir" style="padding-left:12px"><span>src/</span></li>
-              <li class="is-dir" style="padding-left:24px"><span>api/</span></li>
-              <li class="is-changed" style="padding-left:36px"><span>totals.ts</span><em>A</em></li>
-              <li style="padding-left:36px"><span>orders.ts</span></li>
-              <li class="is-dir" style="padding-left:24px"><span>cart/</span></li>
-              <li style="padding-left:36px"><span>Cart.tsx</span></li>
-              <li class="is-changed is-open" style="padding-left:36px"><span>coupon.ts</span><em>M</em></li>
-              <li style="padding-left:36px"><span>totals.ts</span></li>
-              <li class="is-changed" style="padding-left:36px"><span>useCart.ts</span><em>M</em></li>
-              <li class="is-dir" style="padding-left:12px"><span>tests/</span></li>
-              <li class="is-changed" style="padding-left:24px"><span>cart.test.ts</span><em>A</em></li>
-              <li style="padding-left:12px"><span>package.json</span></li>
-            </ul>
-          </div>
-          <div class="review-diff">
-            <p class="pane-title">src/cart/coupon.ts <span>+3 −4</span></p>
-<pre class="diff"><span>  export function applyCoupon(cart, coupon) {</span>
-<span>    const items = cart.items.filter(eligible);</span>
-<span class="is-del">-   const rounded = items.map(discount).map(round);</span>
-<span class="is-del">-   const off = round(rounded.reduce(sum, 0));</span>
-<span class="is-del">-   if (off > cart.subtotal) return cart;</span>
-<span class="is-del">-   return { ...cart, off };</span>
-<span class="is-add">+   const off = round(items.map(discount).reduce(sum, 0));</span>
-<span class="is-add">+   return { ...cart, off: Math.min(off, cart.subtotal) };</span>
-<span class="is-add">+   // rounded once, on the total: see cart.test.ts</span>
-<span>  }</span>
-<span> </span>
-<span>  export function removeCoupon(cart) {</span>
-<span>    const { off, ...rest } = cart;</span>
-<span>    return rest;</span>
-<span>  }</span></pre>
-          </div>
-          <div class="review-git">
-            <p class="pane-title">Git</p>
-            <div class="graph">
-              <svg viewBox="0 0 56 210" width="56" height="210" aria-hidden="true">
-                <g fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M12 0V210"/>
-                  <path d="M44 53V88C44 108 12 103 12 123"/>
-                </g>
-                <path d="M28 18V142C28 160 12 156 12 175" fill="none" stroke="var(--a-red)" stroke-width="2"/>
-                <circle cx="28" cy="18" r="5" fill="var(--a-red)"/>
-                <g fill="currentColor"><circle cx="44" cy="53" r="4"/><circle cx="44" cy="88" r="4"/><circle cx="12" cy="123" r="4"/><circle cx="12" cy="175" r="4"/></g>
-              </svg>
-              <ul>
-                <li class="is-red"><b>yien/webhooks</b><span>Migration waiting on you</span></li>
-                <li><b>a3f91c2</b><span>Compute totals on the server</span></li>
-                <li><b>7be204d</b><span>Round coupon discounts once</span></li>
-                <li><b>04ab7d6</b><span>Merge yien/checkout-rewrite</span></li>
-                <li class="is-gap"><b>e41b07a</b><span>Split the cart out of the page</span></li>
-              </ul>
-            </div>
-          </div>
+        <div class="git-nav" role="group" aria-label="The right panel's views">
+          <button type="button" data-git="graph" aria-pressed="true"><b>Graph</b><span>Every commit on every branch in the tab. Open one to read what it did. An agent waiting on you shows up in red.</span></button>
+          <button type="button" data-git="changes" aria-pressed="false"><b>Changes</b><span>What's on this branch and not committed yet. Open a diff, then commit it from here.</span></button>
+          <button type="button" data-git="branches" aria-pressed="false"><b>Branches</b><span>One per agent, each in its own worktree. Pick one and the panel follows it.</span></button>
+          <button type="button" data-git="files" aria-pressed="false"><b>Files</b><span>The whole tree, with what's been touched marked. Open a file and edit it yourself.</span></button>
         </div>
+        <div class="app is-paper review-app" id="review-app" role="group" aria-label="The YIEN window with its code, diff and commit tabs in the center and the Git panel on the right. The buttons above switch between its views."></div>
       </div>
     </section>
 
