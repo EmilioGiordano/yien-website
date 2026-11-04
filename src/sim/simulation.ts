@@ -44,6 +44,7 @@ export class Simulation {
   private nextId = 0;
   private tabCount: number;
   private detachClock: (() => void) | null = null;
+  private started = false;
   private touched = false;
   private driverQueue = Promise.resolve();
   private drives = false;
@@ -102,9 +103,11 @@ export class Simulation {
   /* ---------- Lifecycle ---------- */
 
   start() {
+    this.detachClock = attachClock(this.clock);
+    if (this.started) return;
+    this.started = true;
     this.clock.fast = this.options.still === true || prefersReducedMotion();
     this.drives = this.options.driver === true && !this.clock.fast;
-    this.detachClock = attachClock(this.clock);
     this.state.workspaces.forEach((ws) => void this.runWorkspace(ws.id));
     if (this.drives) void this.cyclePanel();
   }
