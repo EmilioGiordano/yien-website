@@ -4,29 +4,33 @@ import { HeroApp } from "../app/islands/HeroApp";
 
 <section class="hero">
   <div class="wrap">
-    <div class="copy">
+    <div class="print">
+      <picture class="knot">
+        <source
+          media="(max-width: 620px)"
+          srcset="/hero-knot-narrow.webp"
+          width="410"
+          height="400"
+        />
+        <img
+          src="/hero-knot-wide.webp"
+          width="1360"
+          height="640"
+          alt=""
+          decoding="async"
+          fetchpriority="high"
+        />
+      </picture>
       <h1>
         Many agents.
         <br />
         One thread.
       </h1>
-      <div>
-        <p class="lead">
-          YIEN is a workspace for your coding agents. Run them in real terminals, split however you
-          like, and review every branch from the same window. You only hear from them when one needs
-          you.
-        </p>
-        <p class="actions">
-          <a class="btn" href="#download">
-            Get YIEN
-          </a>
-          <a class="link" href="#tabs">
-            See how it works
-          </a>
-        </p>
-      </div>
+      <p class="lead">
+        Run your coding agents side by side. You only hear from them when one needs you.
+      </p>
     </div>
-    <div data-thread-start>
+    <div class="window" data-thread-start>
       <HeroApp client:load />
     </div>
     <noscript>
@@ -40,29 +44,59 @@ import { HeroApp } from "../app/islands/HeroApp";
 <style>
   .hero {
     position: relative;
-    padding: clamp(28px, 5vw, 64px) 0 0;
+    overflow-x: clip;
   }
 
-  .copy {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
-    gap: 24px clamp(24px, 5vw, 72px);
-    align-items: end;
-    margin-bottom: clamp(32px, 5vw, 56px);
+  /*
+    The plate hangs from the window's top edge and scales with the content's width. Sizes are
+    plate measures over the width the plate was drawn for: its left margin keeps the thread on
+    the window's left edge, and its overhang stays hidden behind the window.
+  */
+  .print {
+    position: relative;
+    container-type: inline-size;
+  }
+
+  .knot {
+    position: absolute;
+    bottom: calc(-132 / 1224 * 100cqw);
+    left: calc(-20 / 1224 * 100cqw);
+    width: calc(1360 / 1224 * 100cqw);
+    pointer-events: none;
+  }
+
+  .knot img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   h1 {
-    font-size: clamp(3.1rem, 7.4vw, 6.6rem);
-    line-height: 1;
+    position: relative;
+    padding-top: 2.2cqw;
+    color: var(--sumi);
+    font-size: 9.5cqw;
+    line-height: 0.98;
   }
 
   .lead {
-    margin-bottom: 22px;
+    position: relative;
+    max-width: 58cqw;
+    margin-top: 1.3cqw;
+    padding-bottom: calc(168 / 1224 * 100cqw);
   }
 
-  .link {
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
+  .window {
+    position: relative;
+  }
+
+  /* A gap cut around the window, the same one the knot leaves where a cord passes over. */
+  .window::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: 15px;
+    background: var(--paper) var(--grain);
   }
 
   .note {
@@ -70,9 +104,24 @@ import { HeroApp } from "../app/islands/HeroApp";
     color: var(--pencil);
   }
 
-  @media (max-width: 760px) {
-    .copy {
-      grid-template-columns: minmax(0, 1fr);
+  @media (max-width: 620px) {
+    .knot {
+      bottom: calc(-106 / 358 * 100cqw);
+      left: calc(-10 / 358 * 100cqw);
+      width: calc(410 / 358 * 100cqw);
+    }
+
+    h1 {
+      padding-top: 1.5cqw;
+      font-size: 15cqw;
+    }
+
+    .lead {
+      max-width: none;
+      margin-top: 2.5cqw;
+      padding-bottom: calc(292 / 358 * 100cqw);
+      font-size: 0.97rem;
+      line-height: 1.6;
     }
   }
 </style>
